@@ -768,3 +768,26 @@ function renderResults(data) {
     </div>
   `;
 }
+
+// Demo dropdown toggle function (global for onclick)
+function toggleDemoDropdown() {
+    const dropdown = document.getElementById('demoDropdown');
+    const chevron = document.getElementById('demoChevron');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        if (chevron) {
+            chevron.style.transform = dropdown.classList.contains('hidden') ? '' : 'rotate(180deg)';
+        }
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const switcher = document.getElementById('demoSwitcher');
+    const dropdown = document.getElementById('demoDropdown');
+    if (switcher && dropdown && !switcher.contains(e.target)) {
+        dropdown.classList.add('hidden');
+        const chevron = document.getElementById('demoChevron');
+        if (chevron) chevron.style.transform = '';
+    }
+});
