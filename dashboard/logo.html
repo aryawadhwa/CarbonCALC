@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonCALC Logo</title>
+    <script src="/_sdk/element_sdk.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .logo-wrapper {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .icon-container {
+            display: inline-block;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .project-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -0.03em;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+
+        .carbon-part {
+            color: #10b981;
+        }
+
+        .calc-part {
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-top: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+        }
+
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 3rem;
+            }
+
+            .subtitle {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+    <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+</head>
+
+<body>
+    <main class="logo-wrapper">
+        <div class="icon-container">
+            <svg width="160" height="160" viewbox="0 0 160 160"
+                xmlns="http://www.w3.org/2000/svg"><!-- Circular background -->
+                <circle cx="80" cy="80" r="75" fill="#10b981" opacity="0.1" /> <!-- Leaf icon -->
+                <path
+                    d="M80 35 Q105 35 115 55 Q125 75 115 95 Q105 115 80 125 Q80 100 80 75 Q80 50 65 45 Q50 40 40 50 Q45 40 60 35 Q70 35 80 35 Z"
+                    fill="#10b981" stroke="#059669" stroke-width="2" /> <!-- Calculator display -->
+                <rect x="90" y="85" width="50" height="50" rx="6" fill="#3b82f6" opacity="0.9" />
+                <!-- Calculator screen -->
+                <rect x="95" y="90" width="40" height="12" rx="2" fill="white" opacity="0.9" />
+                <!-- Calculator buttons grid -->
+                <g fill="white" opacity="0.7">
+                    <rect x="95" y="107" width="8" height="6" rx="1" />
+                    <rect x="106" y="107" width="8" height="6" rx="1" />
+                    <rect x="117" y="107" width="8" height="6" rx="1" />
+                    <rect x="95" y="116" width="8" height="6" rx="1" />
+                    <rect x="106" y="116" width="8" height="6" rx="1" />
+                    <rect x="117" y="116" width="8" height="6" rx="1" />
+                    <rect x="95" y="125" width="8" height="6" rx="1" />
+                    <rect x="106" y="125" width="8" height="6" rx="1" />
+                    <rect x="117" y="125" width="8" height="6" rx="1" />
+                </g> <!-- CO2 text on calculator --> <text x="115" y="99" font-size="8" fill="white" font-weight="bold"
+                    text-anchor="middle">
+                    CO₂
+                </text>
+            </svg>
+        </div>
+        <h1 class="project-title"><span class="carbon-part" id="carbon-text">Carbon</span><span class="calc-part"
+                id="calc-text">CALC</span></h1>
+        <p class="subtitle" id="subtitle-text">Carbon Emission Calculator</p>
+    </main>
+    <script>
+        const defaultConfig = {
+            background_color: "#f8f9fa",
+            surface_color: "#ffffff",
+            text_color: "#1a1a1a",
+            primary_color: "#10b981",
+            secondary_color: "#3b82f6",
+            font_family: "Segoe UI",
+            font_size: 16,
+            project_name: "CarbonCALC",
+            tagline: "Carbon Emission Calculator"
+        };
+
+        let config = {};
+
+        async function onConfigChange(newConfig) {
+            config = newConfig;
+
+            const bgColor = config.background_color || defaultConfig.background_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryColor = config.primary_color || defaultConfig.primary_color;
+            const secondaryColor = config.secondary_color || defaultConfig.secondary_color;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            const baseFontSize = config.font_size || defaultConfig.font_size;
+
+            document.body.style.background = bgColor;
+
+            const titleEl = document.querySelector('.project-title');
+            titleEl.style.color = textColor;
+            titleEl.style.fontFamily = `${fontFamily}, Segoe UI, system-ui, sans-serif`;
+            titleEl.style.fontSize = `${baseFontSize * 2.5}px`;
+
+            document.querySelector('.carbon-part').style.color = primaryColor;
+            document.querySelector('.calc-part').style.color = secondaryColor;
+
+            const subtitleEl = document.querySelector('.subtitle');
+            subtitleEl.style.fontFamily = `${fontFamily}, Segoe UI, system-ui, sans-serif`;
+            subtitleEl.style.fontSize = `${baseFontSize * 0.69}px`;
+
+            const leafPath = document.querySelector('svg path');
+            leafPath.setAttribute('fill', primaryColor);
+
+            const leafStroke = document.querySelector('svg path');
+            leafStroke.setAttribute('stroke', primaryColor);
+
+            const leafCircle = document.querySelector('svg circle');
+            leafCircle.setAttribute('fill', primaryColor);
+
+            const calcRect = document.querySelectorAll('svg rect')[1];
+            calcRect.setAttribute('fill', secondaryColor);
+
+            const projectName = config.project_name || defaultConfig.project_name;
+            const carbonPart = projectName.includes('CALC') ? projectName.split('CALC')[0] : projectName.slice(0, -4);
+            const calcPart = projectName.includes('CALC') ? 'CALC' : projectName.slice(-4);
+
+            document.getElementById('carbon-text').textContent = carbonPart;
+            document.getElementById('calc-text').textContent = calcPart;
+            document.getElementById('subtitle-text').textContent = config.tagline || defaultConfig.tagline;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_color || defaultConfig.primary_color,
+                        set: (value) => {
+                            config.primary_color = value;
+                            window.elementSdk.setConfig({ primary_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_color || defaultConfig.secondary_color,
+                        set: (value) => {
+                            config.secondary_color = value;
+                            window.elementSdk.setConfig({ secondary_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["project_name", config.project_name || defaultConfig.project_name],
+                ["tagline", config.tagline || defaultConfig.tagline]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'9a7426d083de74f4',t:'MTc2NDYwODU0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>
