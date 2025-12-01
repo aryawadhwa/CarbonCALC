@@ -174,10 +174,13 @@ Since the backend is on Render, deploy frontend separately:
 - Verify database initialization ran
 - Check environment variables
 
-### Slow Performance?
-- First request may be slow (cold start)
-- Render free tier has cold starts
-- Consider upgrading for production (still cheap)
+### Slow Performance / Cold Starts?
+- ⏰ **First request** may take **50-60 seconds** (cold start - normal for free tier)
+- After inactivity (15 min), server spins down to save resources
+- 🔄 **Solution**: Wait for first load, then it's fast!
+- 📋 **For demos**: Visit site 5-10 minutes before to wake server
+- 🆓 **Free service**: UptimeRobot can ping every 10 min to keep awake (optional)
+- 💰 **Upgrade**: $7/month for always-on (no cold starts) - optional
 
 ---
 
