@@ -18,6 +18,9 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
 
@@ -360,16 +363,10 @@
     </section>
 
     <!-- Recommendations Section -->
-    <section id="recommendations" class="section hidden container mx-auto px-4 py-8 space-y-8">
-        <div class="space-y-2">
-            <h2 class="text-3xl font-bold tracking-tight">Mitigation Strategies</h2>
-            <p class="text-muted-foreground">AI-generated recommendations for biosafety compliance and carbon reduction.
-            </p>
-        </div>
-        <div id="recommendationsContent" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div class="col-span-full text-center py-12 text-muted-foreground">Loading strategies...</div>
-        </div>
+    <section id="recommendations" class="section hidden">
+        <div id="recommendationsContent"></div>
     </section>
+
 
     <!-- Predictions Section -->
     <section id="predictions" class="section hidden container mx-auto px-4 py-8 space-y-8">
@@ -386,18 +383,10 @@
     </section>
 
     <!-- Benchmarks Section -->
-    <section id="benchmarks" class="section hidden container mx-auto px-4 py-8 space-y-8">
-        <div class="space-y-2">
-            <h2 class="text-3xl font-bold tracking-tight">Industry Benchmarks</h2>
-            <p class="text-muted-foreground">Compare your performance against sector peers.</p>
-        </div>
-        <div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
-            <div class="chart-container relative h-[400px] w-full">
-                <canvas id="benchmarkChart"></canvas>
-            </div>
-        </div>
-        <div id="benchmarkStats" class="space-y-4"></div>
+    <section id="benchmarks" class="section hidden">
+        <div id="benchmarksContent"></div>
     </section>
+
 
     <!-- History Section -->
     <section id="history" class="section hidden container mx-auto px-4 py-8 space-y-8">
@@ -406,7 +395,7 @@
     </section>
 
     <!-- Profile Section -->
-    <section id="profile" class="section hidden container mx-auto px-4 py-8 max-w-2xl">
+    <section id="profile" class="section hidden">
         <h2 class="text-3xl font-bold tracking-tight mb-8">Profile Settings</h2>
         <div id="profileContent" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-6"></div>
     </section>

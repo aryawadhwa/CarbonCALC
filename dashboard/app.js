@@ -81,13 +81,23 @@ const Auth = {
 
 const UI = {
     showSection(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id)?.classList.add('active');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active', 'block'));
+        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+
+        const activeSection = document.getElementById(id);
+        if (activeSection) {
+            activeSection.classList.remove('hidden');
+            activeSection.classList.add('active', 'block');
+        }
 
         // Highlight active nav link
         document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.toggle('active', link.dataset.section === id);
+            link.classList.toggle('text-primary', link.dataset.section === id);
+            link.classList.toggle('text-muted-foreground', link.dataset.section !== id);
         });
+
+        // Load section data
+        if (Sections[id]) Sections[id]();
     },
 
     initNav() {
@@ -103,12 +113,234 @@ const UI = {
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-background', 'shadow-sm', 'text-foreground');
+                    b.classList.add('text-muted-foreground', 'hover:text-foreground');
+                });
+                btn.classList.add('active', 'bg-background', 'shadow-sm', 'text-foreground');
+                btn.classList.remove('text-muted-foreground', 'hover:text-foreground');
+
                 document.getElementById('loginForm').classList.toggle('active', btn.dataset.tab === 'login');
+                document.getElementById('loginForm').classList.toggle('hidden', btn.dataset.tab !== 'login');
+
                 document.getElementById('registerForm').classList.toggle('active', btn.dataset.tab === 'register');
+                document.getElementById('registerForm').classList.toggle('hidden', btn.dataset.tab !== 'register');
             });
         });
+    }
+};
+
+const Sections = {
+    async dashboard() {
+        Dashboard.load();
+    },
+
+    async recommendations() {
+        try {
+            const res = await fetch(`${API_BASE}/api/recommendations`, { headers: Auth.headers() });
+            const data = await res.json();
+
+            const container = document.getElementById('recommendations');
+            if (!res.ok) {
+                container.innerHTML = '<div class="text-center py-12 text-muted-foreground">Failed to load recommendations.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
+                    <div class="max-w-5xl mx-auto">
+                        <div class="mb-8 animate-slide-up">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="p-2 rounded-lg bg-primary/10">
+                                    <i data-lucide="lightbulb" class="w-6 h-6 text-primary"></i>
+                                </div>
+                                <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Recommendations</h1>
+                            </div>
+                            <p class="text-lg text-muted-foreground">Biosafety & mitigation strategies tailored for your organization</p>
+                        </div>
+                        <div class="space-y-6">
+                            ${data.length ? data.map((rec, idx) => `
+                                <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-lg transition-all duration-300" style="animation-delay: ${idx * 100}ms">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                                                    ${rec.category || 'General'}
+                                                </span>
+                                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${rec.impact_rating >= 4 ? 'bg-destructive/10 text-destructive' : 'bg-secondary/10 text-secondary-foreground'}">
+                                                    ${rec.impact_rating >= 4 ? 'High' : 'Medium'} Priority
+                                                </span>
+                                            </div>
+                                            <h3 class="text-xl font-display font-semibold mb-1">${rec.title}</h3>
+                                            <p class="text-base text-muted-foreground">${rec.description}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-2xl font-bold text-primary">-${rec.estimated_reduction} kg</div>
+                                            <div class="text-xs text-muted-foreground">potential impact</div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
+                                            Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="text-center text-muted-foreground">No recommendations found.</div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        } catch (err) {
+            console.error(err);
+        }
+    },
+
+    async benchmarks() {
+        try {
+            const res = await fetch(`${API_BASE}/api/benchmark/compare`, { headers: Auth.headers() });
+            const data = await res.json();
+            if (res.ok) {
+                const container = document.getElementById('benchmarks');
+                container.innerHTML = `
+                    <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
+                        <div class="max-w-7xl mx-auto">
+                            <div class="mb-8 animate-slide-up">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="p-2 rounded-lg bg-primary/10">
+                                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i>
+                                    </div>
+                                    <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Industry Benchmarks</h1>
+                                </div>
+                                <p class="text-lg text-muted-foreground">Compare your performance against industry standards</p>
+                            </div>
+                            <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl overflow-hidden">
+                                <div class="p-6 border-b border-border/50">
+                                    <h3 class="text-2xl font-display font-semibold">Benchmark Comparison</h3>
+                                    <p class="text-sm text-muted-foreground">Your organization vs. industry average</p>
+                                </div>
+                                <div class="p-6">
+                                    <div class="h-96 w-full relative">
+                                        <canvas id="benchmarkChart"></canvas>
+                                    </div>
+                                    <div id="benchmarkStats" class="mt-8"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+                Charts.renderBenchmark(data);
+            }
+        } catch (err) { console.error(err); }
+    },
+
+    async predictions() {
+        try {
+            const res = await fetch(`${API_BASE}/api/predict?forecast_periods=12`, {
+                method: 'POST',
+                headers: Auth.headers()
+            });
+            const data = await res.json();
+            if (res.ok) {
+                Charts.renderPrediction(data);
+                document.getElementById('predictionStats').innerHTML = `
+                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Projected Annual</div>
+                        <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.projected_annual).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
+                    </div>
+                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trend</div>
+                        <div class="text-3xl font-bold mt-2 capitalize ${data.trend_analysis.trend === 'decreasing' ? 'text-primary' : 'text-destructive'}">${data.trend_analysis.trend}</div>
+                    </div>
+                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Reduction Potential</div>
+                        <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.trend_analysis.projected_reduction_potential).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
+                    </div>
+                `;
+            }
+        } catch (err) { console.error(err); }
+    },
+
+    async history() {
+        try {
+            const res = await fetch(`${API_BASE}/api/entries?limit=20`, { headers: Auth.headers() });
+            const entries = await res.json();
+
+            const container = document.getElementById('historyContent');
+            if (entries.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-muted-foreground">No history available.</div>';
+                return;
+            }
+
+            container.innerHTML = entries.map(entry => `
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-muted/50 transition-colors gap-4">
+                    <div>
+                        <div class="text-sm text-muted-foreground mb-1">${new Date(entry.entry_date).toLocaleDateString(undefined, { dateStyle: 'full' })}</div>
+                        <div class="font-bold text-2xl text-foreground">${entry.total_carbon_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        ${Object.entries(entry.category_breakdown || {}).filter(([k]) => !['total', 'per_person'].includes(k)).slice(0, 3).map(([k, v]) => `
+                            <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 capitalize">
+                                ${k}: ${Math.round(v)}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) { console.error(err); }
+    },
+
+    async profile() {
+        if (!Auth.user) await fetch(`${API_BASE}/api/auth/me`, { headers: Auth.headers() }).then(r => r.json()).then(u => Auth.user = u);
+        const u = Auth.user;
+
+        // Ensure profile section exists or target it correctly
+        // Assuming profile section structure is still there
+        const container = document.getElementById('profile');
+        // We can just inject into a specific container if we didn't wipe the section content.
+        // But for consistency, let's assume we might want to style it too.
+        // For now, I'll just update the inner content if I can find the container.
+        // The original HTML has <section id="profile"> ... </section>
+        // I didn't wipe it.
+        // So I should target a container inside it if I want to keep the header.
+        // But wait, the original code targeted `profileContent`?
+        // Let's check the original code in Step 239 replacement.
+        // It targeted `document.getElementById('profileContent')`.
+        // Does `profileContent` exist in index.html?
+        // Step 272 shows `section id="profile" ... <h2 ...>Profile Settings</h2>`.
+        // It does NOT show `profileContent` div.
+        // I should probably add it or target the section and rebuild it.
+
+        container.innerHTML = `
+            <div class="container mx-auto px-4 py-8 max-w-2xl">
+                <h2 class="text-3xl font-bold tracking-tight mb-8">Profile Settings</h2>
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Full Name</label>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.full_name}</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Email</label>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.email}</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Username</label>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.username}</div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Entity Type</label>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground capitalize">${u.user_type}</div>
+                    </div>
+                    ${u.organization_name ? `
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-sm font-medium leading-none">Organization</label>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.organization_name}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
     }
 };
 
@@ -217,7 +449,7 @@ const Charts = {
                 }
             }
         });
-    }
+    },
     renderPrediction(data) {
         const ctx = document.getElementById('predictionChart');
         if (!ctx) return;
