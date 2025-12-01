@@ -19,6 +19,9 @@
                     <a href="#dashboard" class="nav-link" onclick="showSection('dashboard')">Dashboard</a>
                     <a href="#calculate" class="nav-link" onclick="showSection('calculate')">Calculate</a>
                     <a href="#recommendations" class="nav-link" onclick="showSection('recommendations')">Recommendations</a>
+                    <a href="#predictions" class="nav-link" onclick="showSection('predictions')">Predictions</a>
+                    <a href="#iot" class="nav-link" onclick="showSection('iot')">IoT Monitor</a>
+                    <a href="#benchmarks" class="nav-link" onclick="showSection('benchmarks')">Benchmarks</a>
                     <a href="#history" class="nav-link" onclick="showSection('history')">History</a>
                     <a href="#profile" class="nav-link" onclick="showSection('profile')">Profile</a>
                     <button class="btn-logout" onclick="logout()">Logout</button>
@@ -237,6 +240,82 @@
                 <div id="resultsSection" style="display:none;">
                     <h3>Your Carbon Footprint Results</h3>
                     <div id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Predictions Section -->
+        <div id="predictions" class="section">
+            <div class="container">
+                <h2>AI Predictions & Forecasting</h2>
+                <p class="subtitle">Future carbon footprint projection using Ensemble Machine Learning</p>
+                <div id="predictionsContent">
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                    <div class="stats-grid" style="margin-top: 2rem;">
+                        <div class="stat-card">
+                            <h3>Projected Annual</h3>
+                            <div class="stat-value" id="predAnnual">-</div>
+                            <div class="stat-label">kg CO₂</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Trend Direction</h3>
+                            <div class="stat-value" id="predTrend">-</div>
+                            <div class="stat-label">based on history</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Reduction Potential</h3>
+                            <div class="stat-value" id="predPotential">-</div>
+                            <div class="stat-label">kg CO₂</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IoT Monitor Section -->
+        <div id="iot" class="section">
+            <div class="container">
+                <h2>IoT Sensor Network</h2>
+                <p class="subtitle">Real-time emission monitoring from connected sensors</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Active Sensors</h3>
+                        <div class="stat-value" id="iotActive">-</div>
+                        <div class="stat-label">online</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Emission Rate</h3>
+                        <div class="stat-value" id="iotCurrent">-</div>
+                        <div class="stat-label">kg CO₂/hour</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Network Status</h3>
+                        <div class="stat-value" style="color: #10b981;">ONLINE</div>
+                        <div class="stat-label">simulated</div>
+                    </div>
+                </div>
+
+                <div id="sensorGrid" class="sensor-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+                    <!-- Sensors will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Benchmarks Section -->
+        <div id="benchmarks" class="section">
+            <div class="container">
+                <h2>Industry Benchmarks</h2>
+                <p class="subtitle">Compare your performance against industry standards</p>
+                
+                <div class="chart-container">
+                    <canvas id="benchmarkChart"></canvas>
+                </div>
+
+                <div id="benchmarkStats" style="margin-top: 2rem;">
+                    <!-- Benchmark stats populated here -->
                 </div>
             </div>
         </div>
