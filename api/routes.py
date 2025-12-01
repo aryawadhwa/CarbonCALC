@@ -398,9 +398,15 @@ async def get_iot_sensors(
     current_user: User = Depends(get_current_active_user)
 ):
     """Get IoT sensor network status and readings"""
-    sensor_network = get_sensor_network(str(current_user.id), current_user.user_type.value)
-    reading = sensor_network.read_all()
-    return reading
+    # Mock IoT sensor data since simulator was removed
+    return {
+        "timestamp": datetime.utcnow().isoformat(),
+        "total_emission_kg_co2": 0.0,
+        "sensor_count": 0,
+        "active_sensors": 0,
+        "readings": [],
+        "message": "IoT sensor integration coming soon"
+    }
 
 
 @router.get("/iot/sensors/history", response_model=dict)
@@ -409,9 +415,13 @@ async def get_iot_history(
     current_user: User = Depends(get_current_active_user)
 ):
     """Get historical IoT sensor data"""
-    sensor_network = get_sensor_network(str(current_user.id), current_user.user_type.value)
-    summary = sensor_network.get_historical_summary(hours=hours)
-    return summary
+    return {
+        "period_hours": hours,
+        "data_points": 0,
+        "total_emission_kg_co2": 0.0,
+        "average_hourly_emission": 0.0,
+        "message": "IoT sensor integration coming soon"
+    }
 
 
 @router.get("/benchmark/compare", response_model=dict)

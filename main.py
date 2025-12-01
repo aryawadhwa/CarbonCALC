@@ -36,9 +36,30 @@ app.include_router(router, prefix="/api")
 if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Mount dashboard files
+# Mount dashboard files - serve static assets
 if os.path.exists("dashboard"):
     app.mount("/dashboard", StaticFiles(directory="dashboard"), name="dashboard")
+    
+    # Serve CSS and JS files at root level for easier access
+    @app.get("/styles.css")
+    async def get_styles():
+        try:
+            with open("dashboard/styles.css", "r") as f:
+                from fastapi.responses import Response
+                return Response(content=f.read(), media_type="text/css")
+        except FileNotFoundError:
+            from fastapi.responses import JSONResponse
+            return JSONResponse({"error": "Styles not found"}, status_code=404)
+    
+    @app.get("/app.js")
+    async def get_app_js():
+        try:
+            with open("dashboard/app.js", "r") as f:
+                from fastapi.responses import Response
+                return Response(content=f.read(), media_type="application/javascript")
+        except FileNotFoundError:
+            from fastapi.responses import JSONResponse
+            return JSONResponse({"error": "App.js not found"}, status_code=404)
 
 
 @app.get("/", response_class=HTMLResponse)
