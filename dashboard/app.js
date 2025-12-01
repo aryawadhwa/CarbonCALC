@@ -543,12 +543,6 @@ const Charts = {
 document.addEventListener('DOMContentLoaded', () => {
     UI.initNav();
 
-    // Show org name field if not individual
-    document.getElementById('regUserType').addEventListener('change', (e) => {
-        const orgGroup = document.getElementById('orgNameGroup');
-        orgGroup.classList.toggle('hidden', e.target.value === 'individual');
-    });
-
     // Initialize Demo Mode (Auto-login)
     Auth.initDemo();
 
