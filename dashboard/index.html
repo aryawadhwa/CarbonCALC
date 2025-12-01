@@ -141,8 +141,28 @@
                 <a href="#profile"
                     class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
                     data-section="profile">Profile</a>
+
+                <!-- Demo Switcher -->
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 text-sm font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-md hover:bg-primary/20 transition-colors">
+                        <span>Demo: <span id="currentDemo">Factory</span></span>
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    <div
+                        class="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg overflow-hidden hidden group-hover:block">
+                        <button onclick="Auth.switchDemo('factory')"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">🏭
+                            Factory</button>
+                        <button onclick="Auth.switchDemo('institution')"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">🏫
+                            Institution</button>
+                        <button onclick="Auth.switchDemo('individual')"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">👤
+                            Individual</button>
+                    </div>
+                </div>
             </div>
-        </div>
     </nav>
 
     <!-- Dashboard Section -->

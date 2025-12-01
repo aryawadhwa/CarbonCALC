@@ -3,44 +3,130 @@ const API_BASE = window.location.origin;
 
 const Auth = {
     token: 'mock_token',
-    user: {
-        username: 'demo_factory',
-        full_name: 'Demo Factory',
-        email: 'demo@factory.com',
-        user_type: 'institution',
-        organization_name: 'GreenFuture Manufacturing'
+    user: null,
+
+    presets: {
+        factory: {
+            user: {
+                username: 'demo_factory',
+                full_name: 'GreenFuture Manufacturing',
+                email: 'contact@greenfuture.com',
+                user_type: 'corporation',
+                organization_name: 'GreenFuture Mfg Ltd.'
+            },
+            data: {
+                electricity_usage: 15000,
+                gas_usage: 5000,
+                heating_oil: 2000,
+                vehicle_miles: 1200,
+                public_transport_km: 0,
+                flights_km: 5000,
+                waste_produced: 800,
+                recycling_rate: 45,
+                hazardous_waste: 150,
+                employee_count: 150,
+                office_space_sqm: 5000,
+                biosafety_level: "2"
+            }
+        },
+        institution: {
+            user: {
+                username: 'demo_college',
+                full_name: 'State University',
+                email: 'admin@stateuni.edu',
+                user_type: 'institution',
+                organization_name: 'State University Campus'
+            },
+            data: {
+                electricity_usage: 25000,
+                gas_usage: 8000,
+                heating_oil: 0,
+                vehicle_miles: 500,
+                public_transport_km: 2000,
+                flights_km: 10000,
+                waste_produced: 1200,
+                recycling_rate: 60,
+                hazardous_waste: 50,
+                employee_count: 500,
+                office_space_sqm: 12000,
+                biosafety_level: "1"
+            }
+        },
+        individual: {
+            user: {
+                username: 'demo_user',
+                full_name: 'Alex Citizen',
+                email: 'alex@example.com',
+                user_type: 'individual',
+                organization_name: null
+            },
+            data: {
+                electricity_usage: 350,
+                gas_usage: 100,
+                heating_oil: 0,
+                vehicle_miles: 800,
+                public_transport_km: 150,
+                flights_km: 0,
+                waste_produced: 40,
+                recycling_rate: 30,
+                hazardous_waste: 0,
+                employee_count: 1,
+                office_space_sqm: 0,
+                biosafety_level: "1"
+            }
+        }
     },
 
     initDemo() {
         console.log('Initializing Demo Mode...');
-        this.startApp();
+        this.switchDemo('factory');
+    },
+
+    switchDemo(type) {
+        const preset = this.presets[type];
+        if (!preset) return;
+
+        this.user = preset.user;
+
+        // Update UI
+        const label = type.charAt(0).toUpperCase() + type.slice(1);
+        const demoLabel = document.getElementById('currentDemo');
+        if (demoLabel) demoLabel.textContent = label;
+
+        // Update Form
+        const form = document.getElementById('calculateForm');
+        if (form) {
+            Object.keys(preset.data).forEach(key => {
+                if (form[key]) form[key].value = preset.data[key];
+            });
+
+            // Handle corporate section visibility
+            const corpSection = document.getElementById('corporateSection');
+            if (corpSection) {
+                if (this.user.user_type === 'individual') {
+                    corpSection.classList.add('hidden');
+                } else {
+                    corpSection.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Refresh Profile View if active
+        if (document.getElementById('profile').classList.contains('active')) {
+            Sections.profile();
+        }
+
+        // Reset Dashboard/Results to encourage calculation
+        // Or we could auto-calculate? Let's just go to Calculate tab to show the data
+        UI.showSection('calculate');
+
+        // Toast notification (optional, using alert for simplicity or just console)
+        console.log(`Switched to ${label} demo mode`);
     },
 
     startApp() {
         UI.showSection('dashboard');
         Dashboard.load();
-
-        // Pre-fill form with factory data
-        setTimeout(() => {
-            const form = document.getElementById('calculateForm');
-            if (form) {
-                form.electricity_usage.value = 15000;
-                form.gas_usage.value = 5000;
-                form.heating_oil.value = 2000;
-                form.vehicle_miles.value = 1200;
-                form.waste_produced.value = 800;
-                form.recycling_rate.value = 45;
-                form.hazardous_waste.value = 150;
-                form.employee_count.value = 150;
-                form.office_space_sqm.value = 5000;
-                // Trigger change events if needed
-            }
-
-            // Show corporate fields
-            if (this.user.user_type !== 'individual') {
-                document.getElementById('corporateSection')?.classList.remove('hidden');
-            }
-        }, 500);
     },
 
     headers() {
