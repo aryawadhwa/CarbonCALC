@@ -1,274 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CarbonCALC - Biosafety & Carbon Footprint Monitoring</title>
-    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+
+    <!-- Custom CSS Variables -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))',
+                        },
+                        destructive: {
+                            DEFAULT: 'hsl(var(--destructive))',
+                            foreground: 'hsl(var(--destructive-foreground))',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))',
+                        },
+                        popover: {
+                            DEFAULT: 'hsl(var(--popover))',
+                            foreground: 'hsl(var(--popover-foreground))',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))',
+                        },
+                    },
+                    borderRadius: {
+                        lg: 'var(--radius)',
+                        md: 'calc(var(--radius) - 2px)',
+                        sm: 'calc(var(--radius) - 4px)',
+                    },
+                    boxShadow: {
+                        'soft': 'var(--shadow-soft)',
+                        'glow': 'var(--shadow-glow)',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
-<body>
-    <div id="app">
-        <!-- Navigation -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-brand">
-                    <h1>CarbonCALC</h1>
-                </div>
-                <div class="nav-menu" id="navMenu">
-                    <a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a>
-                    <a href="#calculate" class="nav-link" data-section="calculate">Calculate</a>
-                    <a href="#recommendations" class="nav-link" data-section="recommendations">Recommendations</a>
-                    <a href="#predictions" class="nav-link" data-section="predictions">Predictions</a>
-                    <a href="#benchmarks" class="nav-link" data-section="benchmarks">Benchmarks</a>
-                    <a href="#history" class="nav-link" data-section="history">History</a>
-                    <a href="#profile" class="nav-link" data-section="profile">Profile</a>
-                    <button class="btn-logout" onclick="Auth.logout()">Logout</button>
-                </div>
+<body class="bg-background text-foreground min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav
+        class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold font-display">
+                    C</div>
+                <span class="font-display font-bold text-xl tracking-tight">CarbonCALC</span>
             </div>
-        </nav>
 
-        <!-- Auth Section -->
-        <section id="authSection" class="section active">
-            <div class="auth-container">
-                <div class="auth-card">
-                    <h2>Welcome to CarbonCALC</h2>
-                    <p class="subtitle">Real-time Biosafety & Carbon Footprint Monitoring Platform</p>
-
-                    <div class="auth-tabs">
-                        <button class="tab-btn active" data-tab="login">Login</button>
-                        <button class="tab-btn" data-tab="register">Register</button>
-                    </div>
-
-                    <!-- Login Form -->
-                    <form id="loginForm" class="auth-form active" onsubmit="Auth.login(event)">
-                        <div class="form-group">
-                            <label for="loginUsername">Username</label>
-                            <input type="text" id="loginUsername" required autocomplete="username" />
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" required autocomplete="current-password" />
-                        </div>
-                        <button type="submit" class="btn-primary">Login</button>
-                    </form>
-
-                    <!-- Register Form -->
-                    <form id="registerForm" class="auth-form" onsubmit="Auth.register(event)">
-                        <div class="form-group">
-                            <label for="regFullName">Full Name</label>
-                            <input type="text" id="regFullName" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="regEmail">Email</label>
-                            <input type="email" id="regEmail" required autocomplete="email" />
-                        </div>
-                        <div class="form-group">
-                            <label for="regUsername">Username</label>
-                            <input type="text" id="regUsername" required autocomplete="username" />
-                        </div>
-                        <div class="form-group">
-                            <label for="regPassword">Password</label>
-                            <input type="password" id="regPassword" required autocomplete="new-password" />
-                        </div>
-                        <div class="form-group">
-                            <label for="regUserType">Entity Type</label>
-                            <select id="regUserType" required>
-                                <option value="individual">Individual</option>
-                                <option value="corporation">Corporation / Factory</option>
-                                <option value="institution">Institution</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="orgNameGroup">
-                            <label for="regOrgName">Organization Name (Optional for individuals)</label>
-                            <input type="text" id="regOrgName" />
-                        </div>
-                        <button type="submit" class="btn-primary">Register</button>
-                    </form>
-                </div>
+            <div class="hidden md:flex items-center gap-6" id="navMenu">
+                <a href="#dashboard"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="dashboard">Dashboard</a>
+                <a href="#calculate"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="calculate">Calculate</a>
+                <a href="#recommendations"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="recommendations">Strategies</a>
+                <a href="#predictions"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="predictions">Predictions</a>
+                <a href="#benchmarks"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="benchmarks">Benchmarks</a>
+                <a href="#history"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="history">History</a>
+                <a href="#profile"
+                    class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
+                    data-section="profile">Profile</a>
+                <button onclick="Auth.logout()"
+                    class="text-sm font-medium text-destructive hover:text-destructive/80 transition-colors">Logout</button>
             </div>
-        </section>
+        </div>
+    </nav>
 
-        <!-- Main Sections -->
-        <section id="dashboard" class="section">
-            <div class="container">
-                <h2>Biosafety Dashboard</h2>
-                <div class="stats-grid" id="dashboardStats">Loading...</div>
-                <div class="chart-container">
-                    <canvas id="footprintChart"></canvas>
-                </div>
+    <!-- Auth Section -->
+    <section id="authSection" class="section active flex-1 flex items-center justify-center p-4">
+        <div class="w-full max-w-md space-y-8">
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl font-bold tracking-tight">Welcome back</h1>
+                <p class="text-muted-foreground">Biosafety Monitoring & Carbon Analytics</p>
             </div>
-        </section>
 
-        <section id="calculate" class="section">
-            <div class="container">
-                <h2>Calculate Your Carbon & Biosafety Impact</h2>
-                <form id="calculateForm">
-                    <!-- Energy -->
-                    <div class="form-section">
-                        <h3>Energy Consumption</h3>
-                        <div class="form-row">
-                            <div class="form-group H">
-                                <label>Electricity (kWh/month)</label>
-                                <input type="number" step="0.1" name="electricity_usage" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Gas (kWh/month)</label>
-                                <input type="number" step="0.1" name="gas_usage" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Heating Oil (liters/month)</label>
-                                <input type="number" step="0.1" name="heating_oil" value="0" />
-                            </div>
-                        </div>
+            <div class="bg-card text-card-foreground rounded-lg border shadow-soft p-6 space-y-6">
+                <div class="flex p-1 bg-muted rounded-md auth-tabs">
+                    <button
+                        class="flex-1 text-sm font-medium py-1.5 rounded-sm transition-all tab-btn active bg-background shadow-sm text-foreground"
+                        data-tab="login">Login</button>
+                    <button
+                        class="flex-1 text-sm font-medium py-1.5 rounded-sm transition-all tab-btn text-muted-foreground hover:text-foreground"
+                        data-tab="register">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active space-y-4" onsubmit="Auth.login(event)">
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Username</label>
+                        <input type="text" id="loginUsername" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
                     </div>
-
-                    <!-- Transport -->
-                    <div class="form-section">
-                        <h3>Transportation</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Vehicle Miles (km/month)</label>
-                                <input type="number" step="0.1" name="vehicle_miles" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Public Transport (km/month)</label>
-                                <input type="number" step="0.1" name="public_transport_km" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Flights (km/month)</label>
-                                <input type="number" step="0.1" name="flights_km" value="0" />
-                            </div>
-                        </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Password</label>
+                        <input type="password" id="loginPassword" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
                     </div>
-
-                    <!-- Waste & Biosafety -->
-                    <div class="form-section">
-                        <h3>Waste & Hazardous Materials</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Waste Produced (kg/month)</label>
-                                <input type="number" step="0.1" name="waste_produced" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Recycling Rate (%)</label>
-                                <input type="number" min="0" max="100" name="recycling_rate" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Hazardous Waste (kg/month)</label>
-                                <input type="number" step="0.1" name="hazardous_waste" value="0" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Food & Water -->
-                    <div class="form-section">
-                        <h3>Food & Water</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Meat Consumption (kg/month)</label>
-                                <input type="number" step="0.1" name="meat_consumption" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Vegetarian Meals (per month)</label>
-                                <input type="number" name="vegetarian_meals" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Water Usage (liters/month)</label>
-                                <input type="number" step="0.1" name="water_usage" value="0" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Corporate Fields -->
-                    <div class="form-section" id="corporateSection">
-                        <h3>Corporate / Institutional Data</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Employee Count</label>
-                                <input type="number" name="employee_count" value="1" min="1" />
-                            </div>
-                            <div class="form-group">
-                                <label>Facility Area (m²)</label>
-                                <input type="number" step="0.1" name="office_space_sqm" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label>Biosafety Level</label>
-                                <select name="biosafety_level">
-                                    <option value="1">BSL-1 (Low Risk)</option>
-                                    <option value="2">BSL-2 (Moderate)</option>
-                                    <option value="3">BSL-3 (High)</option>
-                                    <option value="4">BSL-4 (Maximum)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <textarea name="notes" rows="3"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-primary btn-large">Calculate Impact</button>
+                    <button type="submit"
+                        class="w-full h-10 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Sign
+                        In</button>
                 </form>
 
-                <div id="resultsSection" class="mt-8" style="display:none;">
-                    <h3>Calculation Results</h3>
-                    <div id="resultsContent" class="bg-white p-6 rounded-lg shadow-lg"></div>
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form hidden space-y-4" onsubmit="Auth.register(event)">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none">Full Name</label>
+                            <input type="text" id="regFullName" required
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium leading-none">Email</label>
+                            <input type="email" id="regEmail" required
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Username</label>
+                        <input type="text" id="regUsername" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Password</label>
+                        <input type="password" id="regPassword" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-sm font-medium leading-none">Entity Type</label>
+                        <select id="regUserType" required
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring">
+                            <option value="individual">Individual</option>
+                            <option value="corporation">Corporation / Factory</option>
+                            <option value="institution">Institution</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2 hidden" id="orgNameGroup">
+                        <label class="text-sm font-medium leading-none">Organization Name</label>
+                        <input type="text" id="regOrgName"
+                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                    </div>
+                    <button type="submit"
+                        class="w-full h-10 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Create
+                        Account</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section hidden container mx-auto px-4 py-8 space-y-8">
+        <div class="flex items-center justify-between">
+            <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <div class="text-sm text-muted-foreground">Real-time Biosafety Overview</div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4" id="dashboardStats">
+            <!-- Stats populated by JS -->
+            <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm animate-pulse">
+                <div class="h-4 w-24 bg-muted rounded mb-2"></div>
+                <div class="h-8 w-16 bg-muted rounded"></div>
+            </div>
+        </div>
+
+        <div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+            <h3 class="font-semibold leading-none tracking-tight mb-4">Carbon Footprint Trend</h3>
+            <div class="chart-container relative h-[350px] w-full">
+                <canvas id="footprintChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculate Section -->
+    <section id="calculate" class="section hidden container mx-auto px-4 py-8 max-w-4xl">
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <h2 class="text-3xl font-bold tracking-tight">Calculate Impact</h2>
+                <p class="text-muted-foreground">Enter your consumption data to generate a comprehensive biosafety
+                    report.</p>
+            </div>
+
+            <form id="calculateForm" class="space-y-8">
+                <!-- Energy -->
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="p-1.5 rounded-md bg-primary/10 text-primary">⚡</span> Energy Consumption
+                    </h3>
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Electricity (kWh)</label>
+                            <input type="number" step="0.1" name="electricity_usage" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Gas (kWh)</label>
+                            <input type="number" step="0.1" name="gas_usage" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Heating Oil (L)</label>
+                            <input type="number" step="0.1" name="heating_oil" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- Other sections (predictions, benchmarks, etc.) remain similar -->
-        <!-- I'll keep them short for brevity, but they follow same clean pattern -->
-
-        <section id="recommendations" class="section">
-            <div class="container">
-                <h2>Biosafety & Mitigation Recommendations</h2>
-                <div id="recommendationsContent" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <p class="text-gray-500">Loading personalized strategies...</p>
+                <!-- Transport -->
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="p-1.5 rounded-md bg-primary/10 text-primary">🚗</span> Transportation
+                    </h3>
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Vehicle (km)</label>
+                            <input type="number" step="0.1" name="vehicle_miles" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Public Transport (km)</label>
+                            <input type="number" step="0.1" name="public_transport_km" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Flights (km)</label>
+                            <input type="number" step="0.1" name="flights_km" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <section id="predictions" class="section">
-            <div class="container">
-                <h2>AI-Powered 12-Month Forecast</h2>
-                <div class="chart-container">
-                    <canvas id="predictionChart"></canvas>
+                <!-- Waste & Biosafety -->
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="p-1.5 rounded-md bg-primary/10 text-primary">☣️</span> Waste & Biosafety
+                    </h3>
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">General Waste (kg)</label>
+                            <input type="number" step="0.1" name="waste_produced" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Recycling Rate (%)</label>
+                            <input type="number" min="0" max="100" name="recycling_rate" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-destructive">Hazardous Waste (kg)</label>
+                            <input type="number" step="0.1" name="hazardous_waste" value="0"
+                                class="flex h-10 w-full rounded-md border border-destructive/20 bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-destructive" />
+                        </div>
+                    </div>
                 </div>
-                <div class="stats-grid mt-8" id="predictionStats"></div>
-            </div>
-        </section>
 
-        <section id="benchmarks" class="section">
-            <div class="container">
-                <h2>Industry Benchmark Comparison</h2>
-                <div class="chart-container">
-                    <canvas id="benchmarkChart"></canvas>
+                <!-- Corporate Fields -->
+                <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 hidden" id="corporateSection">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <span class="p-1.5 rounded-md bg-primary/10 text-primary">🏢</span> Institutional Data
+                    </h3>
+                    <div class="grid gap-6 md:grid-cols-3">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Employees</label>
+                            <input type="number" name="employee_count" value="1" min="1"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Facility Area (m²)</label>
+                            <input type="number" step="0.1" name="office_space_sqm" value="0"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium">Biosafety Level</label>
+                            <select name="biosafety_level"
+                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring">
+                                <option value="1">BSL-1 (Low Risk)</option>
+                                <option value="2">BSL-2 (Moderate)</option>
+                                <option value="3">BSL-3 (High)</option>
+                                <option value="4">BSL-4 (Maximum)</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div id="benchmarkStats" class="mt-8"></div>
-            </div>
-        </section>
 
-        <section id="history" class="section">
-            <div class="container">
-                <h2>Calculation History</h2>
-                <div id="historyContent"></div>
-            </div>
-        </section>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Notes</label>
+                    <textarea name="notes" rows="3"
+                        class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring"></textarea>
+                </div>
 
-        <section id="profile" class="section">
-            <div class="container">
-                <h2>Profile</h2>
-                <div id="profileContent">Loading...</div>
+                <button type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-base font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors">
+                    Calculate Impact Report
+                </button>
+            </form>
+
+            <div id="resultsSection" class="hidden space-y-6 pt-8 border-t">
+                <h3 class="text-2xl font-bold">Results Analysis</h3>
+                <div id="resultsContent" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6"></div>
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+
+    <!-- Recommendations Section -->
+    <section id="recommendations" class="section hidden container mx-auto px-4 py-8 space-y-8">
+        <div class="space-y-2">
+            <h2 class="text-3xl font-bold tracking-tight">Mitigation Strategies</h2>
+            <p class="text-muted-foreground">AI-generated recommendations for biosafety compliance and carbon reduction.
+            </p>
+        </div>
+        <div id="recommendationsContent" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div class="col-span-full text-center py-12 text-muted-foreground">Loading strategies...</div>
+        </div>
+    </section>
+
+    <!-- Predictions Section -->
+    <section id="predictions" class="section hidden container mx-auto px-4 py-8 space-y-8">
+        <div class="space-y-2">
+            <h2 class="text-3xl font-bold tracking-tight">AI Forecasting</h2>
+            <p class="text-muted-foreground">12-month projection based on historical data and industry trends.</p>
+        </div>
+        <div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+            <div class="chart-container relative h-[400px] w-full">
+                <canvas id="predictionChart"></canvas>
+            </div>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3" id="predictionStats"></div>
+    </section>
+
+    <!-- Benchmarks Section -->
+    <section id="benchmarks" class="section hidden container mx-auto px-4 py-8 space-y-8">
+        <div class="space-y-2">
+            <h2 class="text-3xl font-bold tracking-tight">Industry Benchmarks</h2>
+            <p class="text-muted-foreground">Compare your performance against sector peers.</p>
+        </div>
+        <div class="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
+            <div class="chart-container relative h-[400px] w-full">
+                <canvas id="benchmarkChart"></canvas>
+            </div>
+        </div>
+        <div id="benchmarkStats" class="space-y-4"></div>
+    </section>
+
+    <!-- History Section -->
+    <section id="history" class="section hidden container mx-auto px-4 py-8 space-y-8">
+        <h2 class="text-3xl font-bold tracking-tight">History</h2>
+        <div id="historyContent" class="space-y-4"></div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section hidden container mx-auto px-4 py-8 max-w-2xl">
+        <h2 class="text-3xl font-bold tracking-tight mb-8">Profile Settings</h2>
+        <div id="profileContent" class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-6"></div>
+    </section>
 
     <script src="app.js"></script>
 </body>
