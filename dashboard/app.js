@@ -5,6 +5,8 @@ const Auth = {
     token: 'mock_token',
     user: null,
 
+    currentDemoType: 'factory', // Default
+
     presets: {
         factory: {
             user: {
@@ -103,12 +105,13 @@ const Auth = {
 
         try {
             this.user = preset.user;
+            this.currentDemoType = type; // Set current demo type
 
             // Update UI label
-            const label = type === 'factory' ? 'Factory' : 
-                         type === 'institution' ? 'Institution' : 
-                         type === 'individual' ? 'Individual' : type;
-            
+            const label = type === 'factory' ? 'Factory' :
+                type === 'institution' ? 'Institution' :
+                    type === 'individual' ? 'Individual' : type;
+
             const demoLabel = document.getElementById('currentDemo');
             if (demoLabel) {
                 demoLabel.textContent = label;
@@ -146,13 +149,21 @@ const Auth = {
                 dropdown.classList.add('hidden');
             }
 
-            // Switch to Calculate section to show the updated form
-            setTimeout(() => {
-                UI.showSection('calculate');
-                
-                // Show notification
-                this.showNotification(`Switched to ${label} demo mode`, 'success');
-            }, 100);
+            // Refresh Dashboard and Current Section
+            // If we are on a data-heavy section, reload it.
+            const activeSection = document.querySelector('.section.active');
+            if (activeSection) {
+                const sectionId = activeSection.id;
+                if (Sections[sectionId]) {
+                    Sections[sectionId](); // Reload current section with new data
+                }
+            } else {
+                // Default to dashboard if nothing active (shouldn't happen)
+                UI.showSection('dashboard');
+            }
+
+            // Show notification
+            this.showNotification(`Switched to ${label} demo mode`, 'success');
 
             console.log(`✅ Switched to ${label} demo mode`);
         } catch (error) {
@@ -164,14 +175,13 @@ const Auth = {
     showNotification(message, type = 'info') {
         // Simple notification
         const notification = document.createElement('div');
-        notification.className = `fixed top-20 right-4 px-4 py-2 rounded-md shadow-lg z-50 ${
-            type === 'success' ? 'bg-green-500 text-white' : 
-            type === 'error' ? 'bg-red-500 text-white' : 
-            'bg-blue-500 text-white'
-        }`;
+        notification.className = `fixed top-20 right-4 px-4 py-2 rounded-md shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' :
+            type === 'error' ? 'bg-red-500 text-white' :
+                'bg-blue-500 text-white'
+            }`;
         notification.textContent = message;
         document.body.appendChild(notification);
-        
+
         setTimeout(() => {
             notification.remove();
         }, 3000);
@@ -243,80 +253,218 @@ const UI = {
 
 // Mock Data for Demo Mode
 const MockData = {
-    dashboard: {
-        latest_footprint: 12500,
-        average_footprint: 11200,
-        total_entries: 24,
-        trend: 'decreasing'
+    factory: {
+        dashboard: {
+            latest_footprint: 125000,
+            average_footprint: 118000,
+            total_entries: 24,
+            trend: 'decreasing'
+        },
+        history: Array.from({ length: 12 }, (_, i) => ({
+            entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
+            total_carbon_footprint: 120000 + Math.random() * 10000 - 5000,
+            category_breakdown: {
+                energy: 50000,
+                transport: 30000,
+                waste: 20000,
+                biosafety: 20000
+            }
+        })),
+        recommendations: [
+            {
+                title: "Industrial Heat Recovery",
+                description: "Install heat exchangers to recover waste heat from manufacturing processes.",
+                category: "Energy",
+                impact_rating: 5,
+                estimated_reduction: 15000
+            },
+            {
+                title: "Fleet Electrification",
+                description: "Replace diesel logistics trucks with electric vehicles.",
+                category: "Transport",
+                impact_rating: 4,
+                estimated_reduction: 8500
+            },
+            {
+                title: "Closed-Loop Water System",
+                description: "Implement water recycling to reduce consumption and wastewater treatment energy.",
+                category: "Efficiency",
+                impact_rating: 4,
+                estimated_reduction: 5000
+            },
+            {
+                title: "Sustainable Raw Materials",
+                description: "Source 50% of raw materials from certified sustainable suppliers.",
+                category: "Supply Chain",
+                impact_rating: 3,
+                estimated_reduction: 12000
+            }
+        ],
+        benchmarks: {
+            user_footprint: 125000,
+            benchmark: {
+                average_carbon_total: 140000
+            }
+        },
+        predictions: {
+            projected_annual: 1450000,
+            trend_analysis: {
+                trend: 'decreasing',
+                projected_reduction_potential: 120000
+            },
+            predictions: Array.from({ length: 12 }, (_, i) => 120000 - i * 1500),
+            confidence_intervals: Array.from({ length: 12 }, (_, i) => ({
+                upper: 120000 - i * 1500 + 5000,
+                lower: 120000 - i * 1500 - 5000
+            }))
+        }
     },
-    history: Array.from({ length: 12 }, (_, i) => ({
-        entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
-        total_carbon_footprint: 12000 + Math.random() * 5000 - 2500,
-        category_breakdown: {
-            energy: 5000,
-            transport: 3000,
-            waste: 2000,
-            biosafety: 2000
-        }
-    })),
-    recommendations: [
-        {
-            title: "Switch to Renewable Energy",
-            description: "Transitioning to solar or wind power can significantly reduce your Scope 2 emissions.",
-            category: "Energy",
-            impact_rating: 5,
-            estimated_reduction: 4500
+    institution: {
+        dashboard: {
+            latest_footprint: 45000,
+            average_footprint: 48000,
+            total_entries: 24,
+            trend: 'decreasing'
         },
-        {
-            title: "Optimize HVAC Systems",
-            description: "Implementing smart HVAC controls can reduce energy consumption by up to 20%.",
-            category: "Efficiency",
-            impact_rating: 4,
-            estimated_reduction: 2100
+        history: Array.from({ length: 12 }, (_, i) => ({
+            entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
+            total_carbon_footprint: 45000 + Math.random() * 4000 - 2000,
+            category_breakdown: {
+                energy: 25000,
+                transport: 10000,
+                waste: 5000,
+                biosafety: 5000
+            }
+        })),
+        recommendations: [
+            {
+                title: "Campus Solar Array",
+                description: "Install solar panels on rooftop of academic buildings and parking structures.",
+                category: "Energy",
+                impact_rating: 5,
+                estimated_reduction: 8000
+            },
+            {
+                title: "Smart Building Management",
+                description: "Upgrade BMS to optimize HVAC based on class schedules and occupancy.",
+                category: "Efficiency",
+                impact_rating: 4,
+                estimated_reduction: 4500
+            },
+            {
+                title: "Campus Shuttle Electrification",
+                description: "Transition campus bus fleet to electric buses.",
+                category: "Transport",
+                impact_rating: 4,
+                estimated_reduction: 3000
+            },
+            {
+                title: "Zero-Waste Cafeterias",
+                description: "Eliminate single-use plastics and implement composting in all dining halls.",
+                category: "Waste",
+                impact_rating: 3,
+                estimated_reduction: 1500
+            }
+        ],
+        benchmarks: {
+            user_footprint: 45000,
+            benchmark: {
+                average_carbon_total: 52000
+            }
         },
-        {
-            title: "Implement Waste Segregation",
-            description: "Proper segregation of hazardous and non-hazardous waste improves recycling rates.",
-            category: "Waste",
-            impact_rating: 3,
-            estimated_reduction: 800
-        },
-        {
-            title: "Remote Work Policy",
-            description: "Encouraging remote work can lower transportation emissions and office energy use.",
-            category: "Transport",
-            impact_rating: 4,
-            estimated_reduction: 1500
-        }
-    ],
-    benchmarks: {
-        user_footprint: 12500,
-        benchmark: {
-            average_carbon_total: 15000
+        predictions: {
+            projected_annual: 520000,
+            trend_analysis: {
+                trend: 'decreasing',
+                projected_reduction_potential: 45000
+            },
+            predictions: Array.from({ length: 12 }, (_, i) => 45000 - i * 500),
+            confidence_intervals: Array.from({ length: 12 }, (_, i) => ({
+                upper: 45000 - i * 500 + 2000,
+                lower: 45000 - i * 500 - 2000
+            }))
         }
     },
-    predictions: {
-        projected_annual: 145000,
-        trend_analysis: {
-            trend: 'decreasing',
-            projected_reduction_potential: 12000
+    individual: {
+        dashboard: {
+            latest_footprint: 850,
+            average_footprint: 920,
+            total_entries: 24,
+            trend: 'decreasing'
         },
-        predictions: Array.from({ length: 12 }, (_, i) => 12000 - i * 200),
-        confidence_intervals: Array.from({ length: 12 }, (_, i) => ({
-            upper: 12000 - i * 200 + 1000,
-            lower: 12000 - i * 200 - 1000
-        }))
+        history: Array.from({ length: 12 }, (_, i) => ({
+            entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
+            total_carbon_footprint: 850 + Math.random() * 100 - 50,
+            category_breakdown: {
+                energy: 300,
+                transport: 350,
+                waste: 50,
+                biosafety: 150
+            }
+        })),
+        recommendations: [
+            {
+                title: "Switch to LED Lighting",
+                description: "Replace all home incandescent bulbs with energy-efficient LEDs.",
+                category: "Energy",
+                impact_rating: 3,
+                estimated_reduction: 150
+            },
+            {
+                title: "Public Transport Commute",
+                description: "Use public transit for work commute 3 days a week.",
+                category: "Transport",
+                impact_rating: 5,
+                estimated_reduction: 800
+            },
+            {
+                title: "Plant-Based Diet Days",
+                description: "Adopt a vegetarian diet for 3 days a week.",
+                category: "Lifestyle",
+                impact_rating: 4,
+                estimated_reduction: 400
+            },
+            {
+                title: "Smart Thermostat",
+                description: "Install a smart thermostat to optimize home heating and cooling.",
+                category: "Efficiency",
+                impact_rating: 3,
+                estimated_reduction: 250
+            }
+        ],
+        benchmarks: {
+            user_footprint: 850,
+            benchmark: {
+                average_carbon_total: 1200
+            }
+        },
+        predictions: {
+            projected_annual: 9500,
+            trend_analysis: {
+                trend: 'decreasing',
+                projected_reduction_potential: 1500
+            },
+            predictions: Array.from({ length: 12 }, (_, i) => 850 - i * 10),
+            confidence_intervals: Array.from({ length: 12 }, (_, i) => ({
+                upper: 850 - i * 10 + 50,
+                lower: 850 - i * 10 - 50
+            }))
+        }
     }
 };
 
 const Sections = {
+    getData() {
+        const type = Auth.currentDemoType || 'factory';
+        return MockData[type] || MockData.factory;
+    },
+
     async dashboard() {
         Dashboard.load();
     },
 
     async recommendations() {
-        // Use Mock Data
-        const data = MockData.recommendations;
+        const data = this.getData().recommendations;
 
         const container = document.getElementById('recommendations');
         container.innerHTML = `
@@ -367,8 +515,7 @@ const Sections = {
     },
 
     async benchmarks() {
-        // Use Mock Data
-        const data = MockData.benchmarks;
+        const data = this.getData().benchmarks;
 
         const container = document.getElementById('benchmarks');
         container.innerHTML = `
@@ -403,8 +550,7 @@ const Sections = {
     },
 
     async predictions() {
-        // Use Mock Data
-        const data = MockData.predictions;
+        const data = this.getData().predictions;
 
         Charts.renderPrediction(data);
         document.getElementById('predictionStats').innerHTML = `
@@ -424,8 +570,7 @@ const Sections = {
     },
 
     async history() {
-        // Use Mock Data
-        const entries = MockData.history;
+        const entries = this.getData().history;
 
         const container = document.getElementById('historyContent');
         if (entries.length === 0) {
@@ -454,22 +599,7 @@ const Sections = {
         if (!Auth.user) Auth.user = Auth.presets.factory.user; // Fallback
         const u = Auth.user;
 
-        // Ensure profile section exists or target it correctly
-        // Assuming profile section structure is still there
         const container = document.getElementById('profile');
-        // We can just inject into a specific container if we didn't wipe the section content.
-        // But for consistency, let's assume we might want to style it too.
-        // For now, I'll just update the inner content if I can find the container.
-        // The original HTML has <section id="profile"> ... </section>
-        // I didn't wipe it.
-        // So I should target a container inside it if I want to keep the header.
-        // But wait, the original code targeted `profileContent`?
-        // Let's check the original code in Step 239 replacement.
-        // It targeted `document.getElementById('profileContent')`.
-        // Does `profileContent` exist in index.html?
-        // Step 272 shows `section id="profile" ... <h2 ...>Profile Settings</h2>`.
-        // It does NOT show `profileContent` div.
-        // I should probably add it or target the section and rebuild it.
 
         container.innerHTML = `
             <div class="container mx-auto px-4 py-8 max-w-2xl">
@@ -505,11 +635,10 @@ const Sections = {
 
 const Dashboard = {
     async load() {
-        // Use Mock Data
-        const summary = MockData.dashboard;
-        const entries = MockData.history;
+        const data = Sections.getData().dashboard;
+        const entries = Sections.getData().history;
 
-        this.renderStats(summary);
+        this.renderStats(data);
         Charts.renderFootprint(entries.reverse());
     },
 
