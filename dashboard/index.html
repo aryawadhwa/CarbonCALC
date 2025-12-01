@@ -94,10 +94,29 @@
         class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div class="container mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div
-                    class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold font-display">
-                    C</div>
-                <span class="font-display font-bold text-xl tracking-tight">CarbonCALC</span>
+                <svg width="40" height="40" viewbox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="80" cy="80" r="75" fill="#10b981" opacity="0.1" />
+                    <path
+                        d="M80 35 Q105 35 115 55 Q125 75 115 95 Q105 115 80 125 Q80 100 80 75 Q80 50 65 45 Q50 40 40 50 Q45 40 60 35 Q70 35 80 35 Z"
+                        fill="#10b981" stroke="#059669" stroke-width="2" />
+                    <rect x="90" y="85" width="50" height="50" rx="6" fill="#3b82f6" opacity="0.9" />
+                    <rect x="95" y="90" width="40" height="12" rx="2" fill="white" opacity="0.9" />
+                    <g fill="white" opacity="0.7">
+                        <rect x="95" y="107" width="8" height="6" rx="1" />
+                        <rect x="106" y="107" width="8" height="6" rx="1" />
+                        <rect x="117" y="107" width="8" height="6" rx="1" />
+                        <rect x="95" y="116" width="8" height="6" rx="1" />
+                        <rect x="106" y="116" width="8" height="6" rx="1" />
+                        <rect x="117" y="116" width="8" height="6" rx="1" />
+                        <rect x="95" y="125" width="8" height="6" rx="1" />
+                        <rect x="106" y="125" width="8" height="6" rx="1" />
+                        <rect x="117" y="125" width="8" height="6" rx="1" />
+                    </g>
+                    <text x="115" y="99" font-size="8" fill="white" font-weight="bold" text-anchor="middle">CO₂</text>
+                </svg>
+                <span class="font-display font-bold text-xl tracking-tight">
+                    <span class="text-primary">Carbon</span><span class="text-secondary">CALC</span>
+                </span>
             </div>
 
             <div class="hidden md:flex items-center gap-6" id="navMenu">
@@ -122,92 +141,9 @@
                 <a href="#profile"
                     class="text-sm font-medium text-muted-foreground hover:text-primary transition-colors nav-link"
                     data-section="profile">Profile</a>
-                <button onclick="Auth.logout()"
-                    class="text-sm font-medium text-destructive hover:text-destructive/80 transition-colors">Logout</button>
             </div>
         </div>
     </nav>
-
-    <!-- Auth Section -->
-    <section id="authSection" class="section active flex-1 flex items-center justify-center p-4">
-        <div class="w-full max-w-md space-y-8">
-            <div class="text-center space-y-2">
-                <h1 class="text-3xl font-bold tracking-tight">Welcome back</h1>
-                <p class="text-muted-foreground">Biosafety Monitoring & Carbon Analytics</p>
-            </div>
-
-            <div class="bg-card text-card-foreground rounded-lg border shadow-soft p-6 space-y-6">
-                <div class="flex p-1 bg-muted rounded-md auth-tabs">
-                    <button
-                        class="flex-1 text-sm font-medium py-1.5 rounded-sm transition-all tab-btn active bg-background shadow-sm text-foreground"
-                        data-tab="login">Login</button>
-                    <button
-                        class="flex-1 text-sm font-medium py-1.5 rounded-sm transition-all tab-btn text-muted-foreground hover:text-foreground"
-                        data-tab="register">Register</button>
-                </div>
-
-                <!-- Login Form -->
-                <form id="loginForm" class="auth-form active space-y-4" onsubmit="Auth.login(event)">
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Username</label>
-                        <input type="text" id="loginUsername" required
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Password</label>
-                        <input type="password" id="loginPassword" required
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
-                    </div>
-                    <button type="submit"
-                        class="w-full h-10 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">Sign
-                        In</button>
-                </form>
-
-                <!-- Register Form -->
-                <form id="registerForm" class="auth-form hidden space-y-4" onsubmit="Auth.register(event)">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium leading-none">Full Name</label>
-                            <input type="text" id="regFullName" required
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-medium leading-none">Email</label>
-                            <input type="email" id="regEmail" required
-                                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
-                        </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Username</label>
-                        <input type="text" id="regUsername" required
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Password</label>
-                        <input type="password" id="regPassword" required
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-sm font-medium leading-none">Entity Type</label>
-                        <select id="regUserType" required
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring">
-                            <option value="individual">Individual</option>
-                            <option value="corporation">Corporation / Factory</option>
-                            <option value="institution">Institution</option>
-                        </select>
-                    </div>
-                    <div class="space-y-2 hidden" id="orgNameGroup">
-                        <label class="text-sm font-medium leading-none">Organization Name</label>
-                        <input type="text" id="regOrgName"
-                            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-ring" />
-                    </div>
-                    <button type="submit"
-                        class="w-full h-10 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Create
-                        Account</button>
-                </form>
-            </div>
-        </div>
-    </section>
 
     <!-- Dashboard Section -->
     <section id="dashboard" class="section hidden container mx-auto px-4 py-8 space-y-8">

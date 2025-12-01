@@ -2,92 +2,17 @@
 const API_BASE = window.location.origin;
 
 const Auth = {
-    token: localStorage.getItem('authToken'),
-    user: null,
+    token: 'mock_token',
+    user: {
+        username: 'demo_factory',
+        full_name: 'Demo Factory',
+        email: 'demo@factory.com',
+        user_type: 'institution',
+        organization_name: 'GreenFuture Manufacturing'
+    },
 
-    async initDemo() {
+    initDemo() {
         console.log('Initializing Demo Mode...');
-        // Check if we already have a token, if not, try to login as demo user
-        if (!this.token) {
-            await this.loginDemo();
-        } else {
-            // Verify token is valid
-            try {
-                const res = await fetch(`${API_BASE}/api/auth/me`, { headers: this.headers() });
-                if (!res.ok) throw new Error('Token invalid');
-                this.user = await res.json();
-                this.startApp();
-            } catch (e) {
-                await this.loginDemo();
-            }
-        }
-    },
-
-    async loginDemo() {
-        console.log('Attempting Demo Login...');
-        const demoCreds = { username: 'demo_factory', password: 'demo_password' };
-
-        try {
-            // Try login first
-            let res = await fetch(`${API_BASE}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(demoCreds)
-            });
-
-            // If login fails (likely user doesn't exist), register then login
-            if (!res.ok) {
-                console.log('Demo user not found, registering...');
-                const regRes = await fetch(`${API_BASE}/api/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        ...demoCreds,
-                        full_name: 'Demo Factory',
-                        email: 'demo@factory.com',
-                        user_type: 'institution',
-                        organization_name: 'GreenFuture Manufacturing'
-                    })
-                });
-
-                if (!regRes.ok) {
-                    console.warn('Registration failed, falling back to mock mode immediately.');
-                    this.mockSession();
-                    return;
-                }
-
-                // Retry login
-                res = await fetch(`${API_BASE}/api/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(demoCreds)
-                });
-            }
-
-            if (res.ok) {
-                const data = await res.json();
-                this.setSession(data.access_token, data.user);
-                this.startApp();
-            } else {
-                console.warn('Login failed after registration, using mock session.');
-                this.mockSession();
-            }
-        } catch (err) {
-            console.error('Demo login network error:', err);
-            this.mockSession();
-        }
-    },
-
-    mockSession() {
-        console.log('Using Mock Session');
-        this.user = {
-            username: 'demo_factory',
-            full_name: 'Demo Factory',
-            email: 'demo@factory.com',
-            user_type: 'institution',
-            organization_name: 'GreenFuture Manufacturing'
-        };
-        this.token = 'mock_token';
         this.startApp();
     },
 
@@ -116,27 +41,6 @@ const Auth = {
                 document.getElementById('corporateSection')?.classList.remove('hidden');
             }
         }, 500);
-    },
-
-    async login(e) {
-        // ... kept for manual override if needed, but UI is hidden
-        e.preventDefault();
-        // ...
-    },
-
-    // ... (keep register, logout, setSession, headers) ...
-
-    logout() {
-        this.token = null;
-        this.user = null;
-        localStorage.removeItem('authToken');
-        location.reload(); // Reload to re-trigger demo login
-    },
-
-    setSession(token, user) {
-        this.token = token;
-        this.user = user;
-        localStorage.setItem('authToken', token);
     },
 
     headers() {
