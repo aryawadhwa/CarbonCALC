@@ -33,6 +33,7 @@ def get_db():
 
 def init_db():
     """Initialize database tables"""
-    from database.models import EmissionData, SensorData, Prediction
+    # Import all models to register them with SQLAlchemy
+    from database.models import User, CarbonEntry, Recommendation, IndustryBenchmark
     Base.metadata.create_all(bind=engine)
 
