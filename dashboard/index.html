@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonCALC - Real-Time Carbon Footprint Monitoring</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1>🌱 CarbonCALC</h1>
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <a href="#dashboard" class="nav-link" onclick="showSection('dashboard')">Dashboard</a>
+                    <a href="#calculate" class="nav-link" onclick="showSection('calculate')">Calculate</a>
+                    <a href="#recommendations" class="nav-link" onclick="showSection('recommendations')">Recommendations</a>
+                    <a href="#history" class="nav-link" onclick="showSection('history')">History</a>
+                    <a href="#profile" class="nav-link" onclick="showSection('profile')">Profile</a>
+                    <button class="btn-logout" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Login/Register Section -->
+        <div id="authSection" class="section active">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Welcome to CarbonCALC</h2>
+                    <p class="subtitle">Track your carbon footprint and get personalized sustainability recommendations</p>
+                    
+                    <div class="auth-tabs">
+                        <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+                        <button class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+                    </div>
+
+                    <!-- Login Form -->
+                    <div id="loginForm" class="auth-form active">
+                        <form onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="loginUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="loginPassword" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Login</button>
+                        </form>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="registerForm" class="auth-form">
+                        <form onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="regFullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="regEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="regUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="regPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>User Type</label>
+                                <select id="regUserType" required>
+                                    <option value="individual">Individual</option>
+                                    <option value="institution">Institution</option>
+                                    <option value="corporation">Corporation</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="orgNameGroup" style="display:none;">
+                                <label>Organization Name</label>
+                                <input type="text" id="regOrgName">
+                            </div>
+                            <button type="submit" class="btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <div class="container">
+                <h2>Dashboard</h2>
+                <div id="dashboardContent">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Latest Footprint</h3>
+                            <div class="stat-value" id="latestFootprint">-</div>
+                            <div class="stat-label">kg CO₂</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Average Footprint</h3>
+                            <div class="stat-value" id="avgFootprint">-</div>
+                            <div class="stat-label">kg CO₂</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Entries</h3>
+                            <div class="stat-value" id="totalEntries">-</div>
+                            <div class="stat-label">records</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Trend</h3>
+                            <div class="stat-value" id="trend">-</div>
+                            <div class="stat-label" id="trendLabel"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="footprintChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Section -->
+        <div id="calculate" class="section">
+            <div class="container">
+                <h2>Calculate Carbon Footprint</h2>
+                <form id="calculateForm" onsubmit="handleCalculate(event)">
+                    <div class="form-section">
+                        <h3>⚡ Energy Consumption</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Electricity Usage (kWh/month)</label>
+                                <input type="number" step="0.1" id="electricity_usage" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Gas Usage (kWh/month)</label>
+                                <input type="number" step="0.1" id="gas_usage" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Heating Oil (kWh/month)</label>
+                                <input type="number" step="0.1" id="heating_oil" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🚗 Transportation</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Vehicle Miles (km/month)</label>
+                                <input type="number" step="0.1" id="vehicle_miles" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Public Transport (km/month)</label>
+                                <input type="number" step="0.1" id="public_transport_km" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Flights (km/month)</label>
+                                <input type="number" step="0.1" id="flights_km" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>♻️ Waste Management</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Waste Produced (kg/month)</label>
+                                <input type="number" step="0.1" id="waste_produced" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Recycling Rate (%)</label>
+                                <input type="number" step="1" min="0" max="100" id="recycling_rate" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>🍽️ Food & Lifestyle</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Meat Consumption (kg/month)</label>
+                                <input type="number" step="0.1" id="meat_consumption" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Vegetarian Meals (per month)</label>
+                                <input type="number" step="1" id="vegetarian_meals" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>💧 Water Usage</h3>
+                        <div class="form-group">
+                            <label>Water Usage (liters/month)</label>
+                            <input type="number" step="0.1" id="water_usage" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-section" id="corporateSection" style="display:none;">
+                        <h3>🏢 Corporate/Institutional Data</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Employee Count</label>
+                                <input type="number" step="1" id="employee_count" value="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Office Space (sqm)</label>
+                                <input type="number" step="0.1" id="office_space_sqm" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Manufacturing Output (tons/year)</label>
+                                <input type="number" step="0.1" id="manufacturing_output" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Supply Chain Distance (km/year)</label>
+                                <input type="number" step="0.1" id="supply_chain_distance" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes (optional)</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-large">Calculate Carbon Footprint</button>
+                </form>
+
+                <!-- Results Section -->
+                <div id="resultsSection" style="display:none;">
+                    <h3>Your Carbon Footprint Results</h3>
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div id="recommendations" class="section">
+            <div class="container">
+                <h2>Sustainability Recommendations</h2>
+                <div id="recommendationsContent">
+                    <p class="loading">Loading recommendations...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="history" class="section">
+            <div class="container">
+                <h2>History</h2>
+                <div id="historyContent">
+                    <p class="loading">Loading history...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile" class="section">
+            <div class="container">
+                <h2>Profile</h2>
+                <div id="profileContent">
+                    <p class="loading">Loading profile...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
