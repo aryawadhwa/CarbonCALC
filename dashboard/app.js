@@ -24,6 +24,7 @@ const Auth = {
     },
 
     async loginDemo() {
+        console.log('Attempting Demo Login...');
         const demoCreds = { username: 'demo_factory', password: 'demo_password' };
 
         try {
@@ -50,8 +51,7 @@ const Auth = {
                 });
 
                 if (!regRes.ok) {
-                    // If registration fails (maybe user exists but password wrong?), just mock it for frontend demo
-                    console.warn('Registration failed, falling back to mock mode');
+                    console.warn('Registration failed, falling back to mock mode immediately.');
                     this.mockSession();
                     return;
                 }
@@ -69,10 +69,11 @@ const Auth = {
                 this.setSession(data.access_token, data.user);
                 this.startApp();
             } else {
+                console.warn('Login failed after registration, using mock session.');
                 this.mockSession();
             }
         } catch (err) {
-            console.error('Demo login error:', err);
+            console.error('Demo login network error:', err);
             this.mockSession();
         }
     },
