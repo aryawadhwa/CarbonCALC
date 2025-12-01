@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
 
     <!-- Custom CSS Variables -->
-    <link rel="stylesheet" href="/dashboard/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
 
     <!-- Tailwind Configuration -->
     <script>
@@ -143,23 +143,41 @@
                     data-section="profile">Profile</a>
 
                 <!-- Demo Switcher -->
-                <div class="relative group">
+                <div class="relative" id="demoSwitcher">
                     <button
-                        class="flex items-center gap-2 text-sm font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-md hover:bg-primary/20 transition-colors">
+                        id="demoButton"
+                        onclick="toggleDemoDropdown()"
+                        class="flex items-center gap-2 text-sm font-medium text-primary bg-primary/10 px-3 py-1.5 rounded-md hover:bg-primary/20 transition-colors cursor-pointer">
                         <span>Demo: <span id="currentDemo">Factory</span></span>
-                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                        <i data-lucide="chevron-down" class="w-4 h-4" id="demoChevron"></i>
                     </button>
                     <div
-                        class="absolute right-0 mt-2 w-48 bg-card border border-border rounded-md shadow-lg overflow-hidden hidden group-hover:block">
-                        <button onclick="Auth.switchDemo('factory')"
-                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">🏭
-                            Factory</button>
-                        <button onclick="Auth.switchDemo('institution')"
-                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">🏫
-                            Institution</button>
-                        <button onclick="Auth.switchDemo('individual')"
-                            class="w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors">👤
-                            Individual</button>
+                        id="demoDropdown"
+                        class="demo-dropdown absolute right-0 mt-2 w-56 bg-card border border-border rounded-md shadow-lg overflow-hidden hidden z-50">
+                        <button onclick="Auth.switchDemo('factory'); toggleDemoDropdown();"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-primary/10 transition-colors flex items-center gap-2">
+                            <span class="text-lg">🏭</span>
+                            <div>
+                                <div class="font-medium">Factory</div>
+                                <div class="text-xs text-muted-foreground">Manufacturing Company</div>
+                            </div>
+                        </button>
+                        <button onclick="Auth.switchDemo('institution'); toggleDemoDropdown();"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 border-t border-border">
+                            <span class="text-lg">🏫</span>
+                            <div>
+                                <div class="font-medium">Institution</div>
+                                <div class="text-xs text-muted-foreground">University/Campus</div>
+                            </div>
+                        </button>
+                        <button onclick="Auth.switchDemo('individual'); toggleDemoDropdown();"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 border-t border-border">
+                            <span class="text-lg">👤</span>
+                            <div>
+                                <div class="font-medium">Individual</div>
+                                <div class="text-xs text-muted-foreground">Personal Use</div>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </div>

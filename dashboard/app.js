@@ -9,70 +9,82 @@ const Auth = {
         factory: {
             user: {
                 username: 'demo_factory',
-                full_name: 'GreenFuture Manufacturing',
-                email: 'contact@greenfuture.com',
+                full_name: 'EcoTech Manufacturing Inc.',
+                email: 'sustainability@ecotech.com',
                 user_type: 'corporation',
-                organization_name: 'GreenFuture Mfg Ltd.'
+                organization_name: 'EcoTech Manufacturing Inc.'
             },
             data: {
-                electricity_usage: 15000,
-                gas_usage: 5000,
-                heating_oil: 2000,
-                vehicle_miles: 1200,
-                public_transport_km: 0,
-                flights_km: 5000,
-                waste_produced: 800,
-                recycling_rate: 45,
-                hazardous_waste: 150,
-                employee_count: 150,
-                office_space_sqm: 5000,
-                biosafety_level: "2"
+                electricity_usage: 45000,      // High industrial consumption
+                gas_usage: 12000,              // Manufacturing processes
+                heating_oil: 5000,             // Factory heating
+                vehicle_miles: 3500,           // Fleet vehicles
+                public_transport_km: 500,      // Employee commuting
+                flights_km: 15000,             // Business travel
+                waste_produced: 2500,          // Industrial waste (kg/month)
+                recycling_rate: 55,            // Moderate recycling
+                meat_consumption: 0,           // N/A for corporate
+                vegetarian_meals: 0,           // N/A for corporate
+                water_usage: 500000,           // High water usage (liters/month)
+                employee_count: 300,           // Manufacturing workers
+                office_space_sqm: 15000,       // Large facility
+                manufacturing_output: 250,     // Tons/year
+                supply_chain_distance: 50000,  // km/year
+                notes: 'Manufacturing facility with production lines'
             }
         },
         institution: {
             user: {
                 username: 'demo_college',
-                full_name: 'State University',
-                email: 'admin@stateuni.edu',
+                full_name: 'Metropolitan State University',
+                email: 'greenoffice@metrostate.edu',
                 user_type: 'institution',
-                organization_name: 'State University Campus'
+                organization_name: 'Metropolitan State University'
             },
             data: {
-                electricity_usage: 25000,
-                gas_usage: 8000,
-                heating_oil: 0,
-                vehicle_miles: 500,
-                public_transport_km: 2000,
-                flights_km: 10000,
-                waste_produced: 1200,
-                recycling_rate: 60,
-                hazardous_waste: 50,
-                employee_count: 500,
-                office_space_sqm: 12000,
-                biosafety_level: "1"
+                electricity_usage: 35000,      // Campus buildings
+                gas_usage: 15000,              // Heating multiple buildings
+                heating_oil: 2000,             // Older buildings
+                vehicle_miles: 800,            // Campus vehicles
+                public_transport_km: 8500,     // Student/employee commuting
+                flights_km: 20000,             // Academic conferences/travel
+                waste_produced: 1800,          // Campus waste (kg/month)
+                recycling_rate: 70,            // Good recycling program
+                meat_consumption: 0,           // N/A for institution
+                vegetarian_meals: 0,           // N/A for institution
+                water_usage: 350000,           // Campus water usage (liters/month)
+                employee_count: 800,           // Staff + faculty
+                office_space_sqm: 45000,       // Multiple campus buildings
+                manufacturing_output: 0,       // No manufacturing
+                supply_chain_distance: 20000,  // Campus supplies
+                notes: 'University campus with multiple buildings and research labs'
             }
         },
         individual: {
             user: {
                 username: 'demo_user',
-                full_name: 'Alex Citizen',
-                email: 'alex@example.com',
+                full_name: 'Sarah Martinez',
+                email: 'sarah.martinez@email.com',
                 user_type: 'individual',
                 organization_name: null
             },
             data: {
-                electricity_usage: 350,
-                gas_usage: 100,
-                heating_oil: 0,
-                vehicle_miles: 800,
-                public_transport_km: 150,
-                flights_km: 0,
-                waste_produced: 40,
-                recycling_rate: 30,
-                hazardous_waste: 0,
-                employee_count: 1,
-                office_space_sqm: 0,
-                biosafety_level: "1"
+                electricity_usage: 450,        // Home electricity (kWh/month)
+                gas_usage: 180,                // Home heating/cooking
+                heating_oil: 0,                // No oil heating
+                vehicle_miles: 1200,           // Personal car (km/month)
+                public_transport_km: 320,      // Public transit usage
+                flights_km: 8000,              // Annual vacation travel
+                waste_produced: 35,            // Household waste (kg/month)
+                recycling_rate: 45,            // Moderate recycling
+                meat_consumption: 8,           // kg/month
+                vegetarian_meals: 12,          // Vegetarian meals per month
+                water_usage: 4500,             // Household water (liters/month)
+                employee_count: 1,             // Just one person
+                office_space_sqm: 0,           // No office space
+                manufacturing_output: 0,       // No manufacturing
+                supply_chain_distance: 0,      // N/A for individuals
+                notes: 'Urban apartment dweller with moderate consumption'
             }
         }
     },
@@ -84,44 +96,85 @@ const Auth = {
 
     switchDemo(type) {
         const preset = this.presets[type];
-        if (!preset) return;
+        if (!preset) {
+            console.error(`Preset type "${type}" not found`);
+            return;
+        }
 
-        this.user = preset.user;
+        try {
+            this.user = preset.user;
 
-        // Update UI
-        const label = type.charAt(0).toUpperCase() + type.slice(1);
-        const demoLabel = document.getElementById('currentDemo');
-        if (demoLabel) demoLabel.textContent = label;
+            // Update UI label
+            const label = type === 'factory' ? 'Factory' : 
+                         type === 'institution' ? 'Institution' : 
+                         type === 'individual' ? 'Individual' : type;
+            
+            const demoLabel = document.getElementById('currentDemo');
+            if (demoLabel) {
+                demoLabel.textContent = label;
+            }
 
-        // Update Form
-        const form = document.getElementById('calculateForm');
-        if (form) {
-            Object.keys(preset.data).forEach(key => {
-                if (form[key]) form[key].value = preset.data[key];
-            });
+            // Update Form fields
+            const form = document.getElementById('calculateForm');
+            if (form) {
+                // Clear all fields first
+                const inputs = form.querySelectorAll('input[type="number"], textarea');
+                inputs.forEach(input => input.value = '');
 
-            // Handle corporate section visibility
-            const corpSection = document.getElementById('corporateSection');
-            if (corpSection) {
-                if (this.user.user_type === 'individual') {
-                    corpSection.classList.add('hidden');
-                } else {
-                    corpSection.classList.remove('hidden');
+                // Fill with preset data
+                Object.keys(preset.data).forEach(key => {
+                    const field = form.querySelector(`[name="${key}"], #${key}`);
+                    if (field) {
+                        field.value = preset.data[key] || '';
+                    }
+                });
+
+                // Handle corporate section visibility
+                const corpSection = document.getElementById('corporateSection');
+                if (corpSection) {
+                    if (this.user.user_type === 'individual') {
+                        corpSection.classList.add('hidden');
+                    } else {
+                        corpSection.classList.remove('hidden');
+                    }
                 }
             }
+
+            // Close dropdown menu
+            const dropdown = document.querySelector('.demo-dropdown');
+            if (dropdown) {
+                dropdown.classList.add('hidden');
+            }
+
+            // Switch to Calculate section to show the updated form
+            setTimeout(() => {
+                UI.showSection('calculate');
+                
+                // Show notification
+                this.showNotification(`Switched to ${label} demo mode`, 'success');
+            }, 100);
+
+            console.log(`✅ Switched to ${label} demo mode`);
+        } catch (error) {
+            console.error('Error switching demo:', error);
+            this.showNotification('Error switching demo mode', 'error');
         }
+    },
 
-        // Refresh Profile View if active
-        if (document.getElementById('profile').classList.contains('active')) {
-            Sections.profile();
-        }
-
-        // Reset Dashboard/Results to encourage calculation
-        // Or we could auto-calculate? Let's just go to Calculate tab to show the data
-        UI.showSection('dashboard');
-
-        // Toast notification (optional, using alert for simplicity or just console)
-        console.log(`Switched to ${label} demo mode`);
+    showNotification(message, type = 'info') {
+        // Simple notification
+        const notification = document.createElement('div');
+        notification.className = `fixed top-20 right-4 px-4 py-2 rounded-md shadow-lg z-50 ${
+            type === 'success' ? 'bg-green-500 text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            'bg-blue-500 text-white'
+        }`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
     },
 
     startApp() {
