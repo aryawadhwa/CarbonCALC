@@ -6,41 +6,24 @@ This document clearly articulates the unique contributions and differences from 
 
 ---
 
-## 🆕 Novel Contributions
+# Research Novelty: Integrated Biosafety & Carbon Mitigation System
 
-### 1. **Integrated IoT-ML-Cloud Architecture**
-**What's New:**
-- First system to combine IoT sensor simulation, machine learning predictions, and cloud-based benchmarking in a single unified platform
-- Seamless integration of real-time sensor data with historical analysis and predictive modeling
+## 1. Core Innovation: Biosafety-Centric Carbon Analysis
+Unlike traditional carbon calculators that focus solely on emissions, CarbonCALC integrates **Biosafety Monitoring** with carbon footprint analysis. This novel approach treats carbon emissions as a biological safety hazard, prioritizing mitigation strategies that directly improve local environmental health (e.g., particulate matter reduction, hazardous waste neutralization).
 
-**What Exists:**
-- Separate IoT monitoring systems
-- Standalone carbon calculators
-- Individual ML prediction tools
+## 2. Institutional & Industrial Specialization
+The system is specifically engineered for high-impact sectors:
+- **Corporations & Factories**: Tailored modules for manufacturing output, supply chain logistics, and industrial energy efficiency.
+- **Institutions**: Specialized metrics for large-scale facilities, campus operations, and fleet management.
 
-**Our Innovation:**
-- **Unified platform** that integrates all three capabilities
-- Real-time sensor data feeds directly into ML models for predictions
-- Cloud-based architecture enables scalable multi-tenant deployment
+## 3. AI-Driven Mitigation Strategies
+Leveraging ensemble machine learning, the system provides **Predictive Mitigation Strategies**. It forecasts future emission trends and prescribes specific biosafety interventions (e.g., "Upgrade ETP for Zero-Liquid Discharge") rather than generic advice.
 
----
+## 4. Compliance-Ready Framework
+The platform aligns with international standards (ISO 14001) to support institutions in regulatory compliance. It generates actionable reports that serve as preliminary biosafety audits.
 
-### 2. **Multi-Tenant Personalized Recommendation Engine**
-**What's New:**
-- Context-aware recommendation system that adapts to user type (Individual/Institution/Corporation)
-- Quantified impact assessment with statistical confidence
-- Prioritization algorithm based on emission contribution and feasibility
-
-**What Exists:**
-- Generic carbon calculators with basic suggestions
-- Static recommendation lists
-- One-size-fits-all advice
-
-**Our Innovation:**
-- **Personalized recommendations** based on user's specific footprint breakdown
-- **Quantified reduction potential** (e.g., "Reduce 500 kg CO2/year")
-- **User-type specific** suggestions (corporate vs individual strategies)
-- **Impact rating system** (1-5 scale) with difficulty assessment
+## 5. Comparative Benchmarking
+A robust benchmarking engine compares institutional performance against industry peers, fostering competitive sustainability and driving sector-wide improvements in biosafety standards.
 
 ---
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div id="app">
         <!-- Navigation -->
@@ -18,10 +20,12 @@
                 <div class="nav-menu" id="navMenu">
                     <a href="#dashboard" class="nav-link" onclick="showSection('dashboard')">Dashboard</a>
                     <a href="#calculate" class="nav-link" onclick="showSection('calculate')">Calculate</a>
-                    <a href="#recommendations" class="nav-link" onclick="showSection('recommendations')">Recommendations</a>
+                    <a href="#recommendations" class="nav-link"
+                        onclick="showSection('recommendations')">Recommendations</a>
                     <a href="#predictions" class="nav-link" onclick="showSection('predictions')">Predictions</a>
-                    <a href="#iot" class="nav-link" onclick="showSection('iot')">IoT Monitor</a>
                     <a href="#benchmarks" class="nav-link" onclick="showSection('benchmarks')">Benchmarks</a>
+                    <a href="#recommendations" class="nav-link" onclick="showSection('recommendations')">Biosafety &
+                        Mitigation</a>
                     <a href="#history" class="nav-link" onclick="showSection('history')">History</a>
                     <a href="#profile" class="nav-link" onclick="showSection('profile')">Profile</a>
                     <button class="btn-logout" onclick="logout()">Logout</button>
@@ -34,8 +38,8 @@
             <div class="auth-container">
                 <div class="auth-card">
                     <h2>Welcome to CarbonCALC</h2>
-                    <p class="subtitle">Track your carbon footprint and get personalized sustainability recommendations</p>
-                    
+                    <p class="subtitle">Biosafety Monitoring & Carbon Footprint Analysis for Institutions</p>
+
                     <div class="auth-tabs">
                         <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
                         <button class="tab-btn" onclick="switchAuthTab('register')">Register</button>
@@ -76,11 +80,11 @@
                                 <input type="password" id="regPassword" required>
                             </div>
                             <div class="form-group">
-                                <label>User Type</label>
+                                <label>Entity Type</label>
                                 <select id="regUserType" required>
-                                    <option value="individual">Individual</option>
+                                    <option value="corporation">Corporation / Factory</option>
                                     <option value="institution">Institution</option>
-                                    <option value="corporation">Corporation</option>
+                                    <option value="individual">Individual</option>
                                 </select>
                             </div>
                             <div class="form-group" id="orgNameGroup" style="display:none;">
@@ -97,7 +101,7 @@
         <!-- Dashboard Section -->
         <div id="dashboard" class="section">
             <div class="container">
-                <h2>Dashboard</h2>
+                <h2>Biosafety Dashboard</h2>
                 <div id="dashboardContent">
                     <div class="stats-grid">
                         <div class="stat-card">
@@ -121,7 +125,7 @@
                             <div class="stat-label" id="trendLabel"></div>
                         </div>
                     </div>
-                    
+
                     <div class="chart-container">
                         <canvas id="footprintChart"></canvas>
                     </div>
@@ -132,7 +136,7 @@
         <!-- Calculate Section -->
         <div id="calculate" class="section">
             <div class="container">
-                <h2>Calculate Carbon Footprint</h2>
+                <h2>Calculate Biosafety Impact</h2>
                 <form id="calculateForm" onsubmit="handleCalculate(event)">
                     <div class="form-section">
                         <h3>⚡ Energy Consumption</h3>
@@ -153,7 +157,7 @@
                     </div>
 
                     <div class="form-section">
-                        <h3>🚗 Transportation</h3>
+                        <h3>🚗 Transportation & Logistics</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Vehicle Miles (km/month)</label>
@@ -171,7 +175,7 @@
                     </div>
 
                     <div class="form-section">
-                        <h3>♻️ Waste Management</h3>
+                        <h3>♻️ Waste & Hazardous Material</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Waste Produced (kg/month)</label>
@@ -214,7 +218,7 @@
                                 <input type="number" step="1" id="employee_count" value="1">
                             </div>
                             <div class="form-group">
-                                <label>Office Space (sqm)</label>
+                                <label>Office/Facility Area (sqm)</label>
                                 <input type="number" step="0.1" id="office_space_sqm" value="0">
                             </div>
                             <div class="form-group">
@@ -226,6 +230,25 @@
                                 <input type="number" step="0.1" id="supply_chain_distance" value="0">
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Hazardous Waste (kg/month)</label>
+                                <input type="number" step="0.1" id="hazardous_waste" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Effluent Discharge (liters/month)</label>
+                                <input type="number" step="0.1" id="effluent_discharge" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Biosafety Level (1-4)</label>
+                                <select id="biosafety_level">
+                                    <option value="1">BSL-1 (Low Risk)</option>
+                                    <option value="2">BSL-2 (Moderate Risk)</option>
+                                    <option value="3">BSL-3 (High Risk)</option>
+                                    <option value="4">BSL-4 (Max Risk)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -233,12 +256,12 @@
                         <textarea id="notes" rows="3"></textarea>
                     </div>
 
-                    <button type="submit" class="btn-primary btn-large">Calculate Carbon Footprint</button>
+                    <button type="submit" class="btn-primary btn-large">Calculate Biosafety Impact</button>
                 </form>
 
                 <!-- Results Section -->
                 <div id="resultsSection" style="display:none;">
-                    <h3>Your Carbon Footprint Results</h3>
+                    <h3>Your Biosafety Impact Results</h3>
                     <div id="resultsContent"></div>
                 </div>
             </div>
@@ -248,7 +271,7 @@
         <div id="predictions" class="section">
             <div class="container">
                 <h2>AI Predictions & Forecasting</h2>
-                <p class="subtitle">Future carbon footprint projection using Ensemble Machine Learning</p>
+                <p class="subtitle">Future impact projection using Ensemble Machine Learning</p>
                 <div id="predictionsContent">
                     <div class="chart-container">
                         <canvas id="predictionChart"></canvas>
@@ -274,42 +297,12 @@
             </div>
         </div>
 
-        <!-- IoT Monitor Section -->
-        <div id="iot" class="section">
-            <div class="container">
-                <h2>IoT Sensor Network</h2>
-                <p class="subtitle">Real-time emission monitoring from connected sensors</p>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Active Sensors</h3>
-                        <div class="stat-value" id="iotActive">-</div>
-                        <div class="stat-label">online</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Current Emission Rate</h3>
-                        <div class="stat-value" id="iotCurrent">-</div>
-                        <div class="stat-label">kg CO₂/hour</div>
-                    </div>
-                    <div class="stat-card">
-                        <h3>Network Status</h3>
-                        <div class="stat-value" style="color: #10b981;">ONLINE</div>
-                        <div class="stat-label">simulated</div>
-                    </div>
-                </div>
-
-                <div id="sensorGrid" class="sensor-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
-                    <!-- Sensors will be populated here -->
-                </div>
-            </div>
-        </div>
-
         <!-- Benchmarks Section -->
         <div id="benchmarks" class="section">
             <div class="container">
                 <h2>Industry Benchmarks</h2>
                 <p class="subtitle">Compare your performance against industry standards</p>
-                
+
                 <div class="chart-container">
                     <canvas id="benchmarkChart"></canvas>
                 </div>
@@ -323,9 +316,9 @@
         <!-- Recommendations Section -->
         <div id="recommendations" class="section">
             <div class="container">
-                <h2>Sustainability Recommendations</h2>
+                <h2>Biosafety & Mitigation Strategies</h2>
                 <div id="recommendationsContent">
-                    <p class="loading">Loading recommendations...</p>
+                    <p class="loading">Loading strategies...</p>
                 </div>
             </div>
         </div>
@@ -353,5 +346,5 @@
 
     <script src="app.js"></script>
 </body>
-</html>
 
+</html>

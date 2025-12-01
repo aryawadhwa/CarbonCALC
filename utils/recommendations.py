@@ -14,205 +14,125 @@ class RecommendationEngine:
     RECOMMENDATIONS_LIBRARY = {
         "energy": [
             {
-                "title": "Switch to Renewable Energy",
-                "description": "Consider switching to a renewable energy provider or installing solar panels. This can reduce your electricity emissions by up to 90%.",
+                "title": "Industrial Energy Efficiency Audit",
+                "description": "Conduct a comprehensive audit of industrial machinery. Optimizing motors and thermal systems can reduce emissions by 20-30%.",
                 "impact_rating": 5,
                 "difficulty": "medium",
-                "estimated_reduction": 500,  # kg CO2 per year
+                "estimated_reduction": 5000,
                 "cost_estimate": "medium"
             },
             {
-                "title": "Use Energy-Efficient Appliances",
-                "description": "Replace old appliances with Energy Star rated ones. Upgrade to LED lighting throughout your home/office.",
-                "impact_rating": 4,
-                "difficulty": "easy",
-                "estimated_reduction": 300,
-                "cost_estimate": "medium"
-            },
-            {
-                "title": "Optimize Heating and Cooling",
-                "description": "Use programmable thermostats, improve insulation, and seal air leaks. Lower heating by 2°C and raise cooling by 2°C.",
-                "impact_rating": 3,
-                "difficulty": "easy",
-                "estimated_reduction": 200,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Unplug Electronics When Not in Use",
-                "description": "Use power strips and unplug devices when not in use to eliminate phantom energy consumption.",
-                "impact_rating": 2,
-                "difficulty": "easy",
-                "estimated_reduction": 100,
-                "cost_estimate": "free"
-            }
-        ],
-        "transportation": [
-            {
-                "title": "Use Public Transportation",
-                "description": "Switch to public transport, cycling, or walking for daily commutes. Consider carpooling or ride-sharing.",
-                "impact_rating": 5,
-                "difficulty": "easy",
-                "estimated_reduction": 1000,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Switch to Electric Vehicle",
-                "description": "If you need a car, consider an electric vehicle. Even with grid electricity, EVs have lower emissions.",
-                "impact_rating": 5,
-                "difficulty": "hard",
-                "estimated_reduction": 2000,
-                "cost_estimate": "high"
-            },
-            {
-                "title": "Reduce Air Travel",
-                "description": "Opt for video conferencing instead of business flights. Combine trips when possible, choose direct flights.",
-                "impact_rating": 4,
-                "difficulty": "medium",
-                "estimated_reduction": 1500,
-                "cost_estimate": "free"
-            },
-            {
-                "title": "Maintain Vehicle Efficiency",
-                "description": "Keep tires properly inflated, maintain regular servicing, and practice eco-driving techniques.",
-                "impact_rating": 2,
-                "difficulty": "easy",
-                "estimated_reduction": 150,
-                "cost_estimate": "low"
-            }
-        ],
-        "waste": [
-            {
-                "title": "Increase Recycling Rate",
-                "description": "Improve waste segregation, compost organic waste, and ensure proper recycling of paper, plastic, and metal.",
-                "impact_rating": 4,
-                "difficulty": "easy",
-                "estimated_reduction": 400,
-                "cost_estimate": "free"
-            },
-            {
-                "title": "Reduce Single-Use Plastics",
-                "description": "Switch to reusable bags, bottles, and containers. Avoid single-use plastics and packaging.",
-                "impact_rating": 3,
-                "difficulty": "easy",
-                "estimated_reduction": 200,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Compost Organic Waste",
-                "description": "Start composting food scraps and yard waste. This reduces landfill methane emissions significantly.",
-                "impact_rating": 3,
-                "difficulty": "medium",
-                "estimated_reduction": 300,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Implement Zero-Waste Practices",
-                "description": "Adopt zero-waste principles: refuse, reduce, reuse, recycle, rot. Focus on waste prevention.",
-                "impact_rating": 4,
-                "difficulty": "medium",
-                "estimated_reduction": 500,
-                "cost_estimate": "low"
-            }
-        ],
-        "food": [
-            {
-                "title": "Reduce Meat Consumption",
-                "description": "Adopt a more plant-based diet. Try 'Meatless Mondays' or reduce meat portions. Plant-based proteins have much lower emissions.",
-                "impact_rating": 5,
-                "difficulty": "medium",
-                "estimated_reduction": 600,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Buy Local and Seasonal Produce",
-                "description": "Reduce food miles by purchasing local, seasonal produce. Support local farmers and reduce transportation emissions.",
-                "impact_rating": 3,
-                "difficulty": "easy",
-                "estimated_reduction": 200,
-                "cost_estimate": "medium"
-            },
-            {
-                "title": "Reduce Food Waste",
-                "description": "Plan meals, use leftovers creatively, and store food properly. Food waste in landfills produces methane.",
-                "impact_rating": 4,
-                "difficulty": "easy",
-                "estimated_reduction": 350,
-                "cost_estimate": "free"
-            },
-            {
-                "title": "Choose Sustainable Seafood",
-                "description": "If consuming seafood, choose sustainably sourced options. Consider the environmental impact of your choices.",
-                "impact_rating": 2,
-                "difficulty": "easy",
-                "estimated_reduction": 100,
-                "cost_estimate": "medium"
-            }
-        ],
-        "water": [
-            {
-                "title": "Install Water-Efficient Fixtures",
-                "description": "Install low-flow showerheads, faucets, and toilets. This reduces both water usage and energy for heating.",
-                "impact_rating": 3,
-                "difficulty": "easy",
-                "estimated_reduction": 150,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Fix Leaks Promptly",
-                "description": "Regularly check for and fix leaks. A single leaky faucet can waste significant amounts of water.",
-                "impact_rating": 2,
-                "difficulty": "easy",
-                "estimated_reduction": 50,
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Use Rainwater Harvesting",
-                "description": "Collect and use rainwater for irrigation and non-potable uses. Reduces demand on municipal water.",
-                "impact_rating": 2,
-                "difficulty": "medium",
-                "estimated_reduction": 100,
-                "cost_estimate": "medium"
-            }
-        ],
-        "corporate": [
-            {
-                "title": "Implement Remote Work Policy",
-                "description": "Allow employees to work from home several days per week. This significantly reduces commute emissions.",
-                "impact_rating": 5,
-                "difficulty": "medium",
-                "estimated_reduction": 5000,  # for corporation
-                "cost_estimate": "low"
-            },
-            {
-                "title": "Green Building Certification",
-                "description": "Pursue LEED or similar green building certifications. Optimize building energy efficiency and materials.",
+                "title": "Renewable Energy Transition",
+                "description": "Switch facility power to renewable sources (solar/wind). Critical for reducing Scope 2 emissions in manufacturing.",
                 "impact_rating": 5,
                 "difficulty": "hard",
                 "estimated_reduction": 10000,
                 "cost_estimate": "high"
             },
             {
-                "title": "Employee Sustainability Program",
-                "description": "Educate employees on sustainability practices. Offer incentives for green commuting and sustainable behaviors.",
+                "title": "Heat Recovery Systems",
+                "description": "Install waste heat recovery units on exhaust stacks. Reusing thermal energy improves biosafety by reducing thermal pollution.",
                 "impact_rating": 4,
                 "difficulty": "medium",
-                "estimated_reduction": 2000,
-                "cost_estimate": "low"
-            },
+                "estimated_reduction": 3000,
+                "cost_estimate": "medium"
+            }
+        ],
+        "transportation": [
             {
-                "title": "Optimize Supply Chain",
-                "description": "Work with suppliers to reduce transportation distances, use sustainable materials, and minimize packaging.",
+                "title": "Green Logistics Optimization",
+                "description": "Optimize supply chain routes to minimize fuel consumption. Use fleet management software for real-time tracking.",
                 "impact_rating": 4,
-                "difficulty": "hard",
-                "estimated_reduction": 8000,
+                "difficulty": "medium",
+                "estimated_reduction": 4000,
                 "cost_estimate": "medium"
             },
             {
-                "title": "Carbon Offsetting Program",
-                "description": "Implement a corporate carbon offset program for unavoidable emissions. Invest in verified carbon reduction projects.",
-                "impact_rating": 3,
+                "title": "Electric Fleet Conversion",
+                "description": "Transition logistics fleet to electric vehicles. Reduces particulate matter and improves local air quality (biosafety).",
+                "impact_rating": 5,
+                "difficulty": "hard",
+                "estimated_reduction": 8000,
+                "cost_estimate": "high"
+            }
+        ],
+        "waste": [
+            {
+                "title": "Hazardous Waste Neutralization",
+                "description": "Implement on-site neutralization for chemical/biological waste. Prevents environmental contamination and ensures biosafety compliance.",
+                "impact_rating": 5,
+                "difficulty": "hard",
+                "estimated_reduction": 2000,
+                "cost_estimate": "high"
+            },
+            {
+                "title": "Circular Economy Integration",
+                "description": "Repurpose industrial byproducts as raw materials. Reduces landfill usage and raw material extraction impact.",
+                "impact_rating": 4,
                 "difficulty": "medium",
-                "estimated_reduction": 0,  # offsets, not reduces
+                "estimated_reduction": 5000,
+                "cost_estimate": "medium"
+            },
+            {
+                "title": "Zero-Liquid Discharge (ZLD)",
+                "description": "Implement ZLD systems to treat wastewater. Recovers water for reuse and eliminates liquid waste discharge.",
+                "impact_rating": 5,
+                "difficulty": "hard",
+                "estimated_reduction": 3000,
+                "cost_estimate": "high"
+            }
+        ],
+        "food": [
+            {
+                "title": "Sustainable Canteen Sourcing",
+                "description": "Source cafeteria food from local, sustainable producers. Reduces food miles and supports local biosafety standards.",
+                "impact_rating": 3,
+                "difficulty": "easy",
+                "estimated_reduction": 1000,
+                "cost_estimate": "low"
+            }
+        ],
+        "water": [
+            {
+                "title": "Industrial Water Recycling",
+                "description": "Treat and recycle process water. Reduces demand on local aquifers and minimizes effluent discharge.",
+                "impact_rating": 4,
+                "difficulty": "medium",
+                "estimated_reduction": 2000,
+                "cost_estimate": "medium"
+            },
+            {
+                "title": "Effluent Treatment Plant (ETP) Upgrade",
+                "description": "Upgrade ETP with advanced filtration. Ensures discharged water meets strict biosafety parameters.",
+                "impact_rating": 5,
+                "difficulty": "hard",
+                "estimated_reduction": 1500,
+                "cost_estimate": "high"
+            }
+        ],
+        "corporate": [
+            {
+                "title": "ISO 14001 Certification",
+                "description": "Implement Environmental Management Systems. Standardizes biosafety and sustainability protocols across operations.",
+                "impact_rating": 5,
+                "difficulty": "hard",
+                "estimated_reduction": 15000,
+                "cost_estimate": "high"
+            },
+            {
+                "title": "Biosafety Compliance Audit",
+                "description": "Regular audits for biological and chemical safety. Identifies risks and ensures regulatory compliance.",
+                "impact_rating": 5,
+                "difficulty": "medium",
+                "estimated_reduction": 5000,
+                "cost_estimate": "medium"
+            },
+            {
+                "title": "Supply Chain Decarbonization",
+                "description": "Engage suppliers in carbon reduction. Scope 3 emissions often constitute the largest share of corporate footprint.",
+                "impact_rating": 4,
+                "difficulty": "hard",
+                "estimated_reduction": 20000,
                 "cost_estimate": "medium"
             }
         ]
@@ -225,7 +145,7 @@ class RecommendationEngine:
         top_n: int = 5
     ) -> List[Dict[str, Any]]:
         """
-        Generate personalized recommendations based on carbon footprint breakdown
+        Generate personalized biosafety and mitigation recommendations
         """
         recommendations = []
         total_footprint = footprint_breakdown.get("total", 0)
@@ -246,35 +166,26 @@ class RecommendationEngine:
             if category in RecommendationEngine.RECOMMENDATIONS_LIBRARY:
                 category_recommendations = RecommendationEngine.RECOMMENDATIONS_LIBRARY[category]
                 
-                # Adjust for corporate/institutional users
-                if user_type in [UserType.CORPORATION, UserType.INSTITUTION] and category != "corporate":
-                    # Still include, but with adjusted messaging
-                    pass
-                
                 # Select top 2 recommendations per category
                 for rec in category_recommendations[:2]:
                     # Adjust reduction estimate for user type
-                    if user_type == UserType.CORPORATION and "corporate" not in category:
-                        # Scale up for corporations
-                        rec_copy = rec.copy()
-                        rec_copy["category"] = category
-                        rec_copy["estimated_reduction"] = rec["estimated_reduction"] * 10
-                        recommendations.append(rec_copy)
+                    rec_copy = rec.copy()
+                    rec_copy["category"] = category
+                    
+                    if user_type == UserType.CORPORATION:
+                        rec_copy["estimated_reduction"] *= 10
                     elif user_type == UserType.INSTITUTION:
-                        rec_copy = rec.copy()
-                        rec_copy["category"] = category
-                        rec_copy["estimated_reduction"] = rec["estimated_reduction"] * 5
-                        recommendations.append(rec_copy)
-                    else:
-                        rec_copy = rec.copy()
-                        rec_copy["category"] = category
-                        recommendations.append(rec_copy)
+                        rec_copy["estimated_reduction"] *= 5
+                        
+                    recommendations.append(rec_copy)
         
-        # Add corporate-specific recommendations if applicable
+        # Add corporate-specific recommendations for all non-individual users
         if user_type in [UserType.CORPORATION, UserType.INSTITUTION]:
             for rec in RecommendationEngine.RECOMMENDATIONS_LIBRARY["corporate"][:3]:
                 rec_copy = rec.copy()
                 rec_copy["category"] = "corporate"
+                if user_type == UserType.CORPORATION:
+                     rec_copy["estimated_reduction"] *= 2
                 recommendations.append(rec_copy)
         
         # Sort by impact rating and estimated reduction
@@ -300,25 +211,25 @@ class RecommendationEngine:
     
     @staticmethod
     def _get_contextual_feedback(category: str, footprint_breakdown: Dict[str, float]) -> str:
-        """Generate contextual biosafety and sustainability feedback"""
+        """Generate contextual biosafety and mitigation feedback"""
         category_emissions = footprint_breakdown.get(category, 0)
         total = footprint_breakdown.get("total", 1)
         percentage = (category_emissions / total * 100) if total > 0 else 0
         
         feedbacks = {
-            "energy": f"Energy consumption accounts for {percentage:.1f}% of your carbon footprint. "
-                     f"Transitioning to renewable energy sources and improving efficiency can significantly reduce your impact.",
-            "transportation": f"Transportation represents {percentage:.1f}% of your emissions. "
-                            f"Optimizing travel patterns and choosing low-carbon transport options offers substantial reduction potential.",
-            "waste": f"Waste management contributes {percentage:.1f}% to your footprint. "
-                    f"Implementing circular economy principles and waste reduction strategies will improve your sustainability profile.",
-            "food": f"Food-related emissions make up {percentage:.1f}% of your carbon footprint. "
-                   f"Dietary choices have significant environmental impact, with plant-based options offering much lower emissions.",
-            "water": f"Water usage accounts for {percentage:.1f}% of your footprint. "
-                    f"While smaller, efficient water management supports overall sustainability goals.",
-            "corporate": f"Corporate operations contribute significantly to your footprint. "
-                        f"Systematic changes in operations, supply chains, and employee practices can drive substantial improvements.",
-            "general": "Every reduction counts. Small changes in daily habits compound into significant environmental benefits over time."
+            "energy": f"Energy use constitutes {percentage:.1f}% of emissions. "
+                     f"Optimizing thermal systems and transitioning to renewables is critical for biosafety and carbon reduction.",
+            "transportation": f"Logistics account for {percentage:.1f}% of impact. "
+                            f"Electrifying fleets reduces particulate matter, directly improving local biosafety.",
+            "waste": f"Waste generation is {percentage:.1f}% of your footprint. "
+                    f"Proper neutralization of hazardous waste is a key biosafety requirement.",
+            "food": f"Food sourcing contributes {percentage:.1f}%. "
+                   f"Sustainable sourcing ensures biological safety and reduces supply chain emissions.",
+            "water": f"Water usage is {percentage:.1f}%. "
+                    f"Treating effluent prevents biological contamination of local water bodies.",
+            "corporate": f"Operational protocols contribute significantly. "
+                        f"Standardizing biosafety management systems (ISO 14001) is recommended.",
+            "general": "Mitigation strategies should prioritize high-impact areas to ensure maximum biosafety and environmental protection."
         }
         
         return feedbacks.get(category, feedbacks["general"])

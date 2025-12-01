@@ -23,7 +23,8 @@ from utils.carbon_calculator import CarbonCalculator
 from utils.recommendations import RecommendationEngine
 from utils.benchmarking import BenchmarkAnalyzer
 from ml_models.predictor import CarbonFootprintPredictor
-from iot.sensor_simulator import get_sensor_network
+# from iot.sensor_simulator import get_sensor_network (Removed)
+
 
 router = APIRouter()
 
@@ -451,6 +452,7 @@ async def compare_with_benchmark(
     return comparison
 
 
+# IoT routes removed
 @router.get("/research/report", response_model=dict)
 async def get_research_report(
     current_user: User = Depends(get_current_active_user),

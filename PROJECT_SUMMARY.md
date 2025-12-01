@@ -1,7 +1,23 @@
-# Project Summary: Real-Time Carbon Footprint Monitoring System
+# Project Summary: CarbonCALC - Biosafety & Carbon Mitigation Platform
 
 ## Overview
-A comprehensive web-based carbon footprint monitoring and sustainability platform that enables individuals, institutions, and corporations to calculate, track, and reduce their environmental impact through AI-powered recommendations.
+CarbonCALC is a specialized platform designed to assess and mitigate the environmental impact of **Institutions and Commercial Factories**. It integrates carbon footprint analysis with **Biosafety Monitoring**, providing actionable strategies to reduce hazardous emissions and ensure regulatory compliance.
+
+## Key Features
+- **Biosafety-Centric Analysis**: Focuses on emissions as environmental health hazards.
+- **Institutional Modules**: Specialized inputs for manufacturing, logistics, and large-scale operations.
+- **AI-Powered Forecasting**: Predicts future impact trends to enable proactive mitigation.
+- **Mitigation Strategies**: Prescriptive recommendations for hazardous waste management, energy efficiency, and supply chain decarbonization.
+- **Compliance Benchmarking**: Compares performance against industry biosafety standards.
+
+## Technology Stack
+- **Backend**: FastAPI (Python) for high-performance calculation and ML inference.
+- **Frontend**: Responsive Dashboard for real-time monitoring and reporting.
+- **ML Engine**: Scikit-learn for ensemble forecasting models.
+- **Database**: SQLAlchemy ORM for structured data management.
+
+## Research Contribution
+The project contributes to the field of **Environmental Informatics** by proposing a unified framework for Carbon Management and Biosafety, moving beyond simple calculators to a comprehensive mitigation support system for high-impact sectors.
 
 ## What Was Built
 

@@ -33,10 +33,10 @@ function switchAuthTab(tab) {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const tabs = document.querySelectorAll('.tab-btn');
-    
+
     tabs.forEach(t => t.classList.remove('active'));
     event.target.classList.add('active');
-    
+
     if (tab === 'login') {
         loginForm.classList.add('active');
         registerForm.classList.remove('active');
@@ -59,7 +59,7 @@ async function handleLogin(event) {
         });
 
         const data = await response.json();
-        
+
         if (response.ok) {
             authToken = data.access_token;
             localStorage.setItem('authToken', authToken);
@@ -93,7 +93,7 @@ async function handleRegister(event) {
         });
 
         const data = await response.json();
-        
+
         if (response.ok) {
             alert('Registration successful! Please login.');
             switchAuthTab('login');
@@ -120,7 +120,7 @@ async function loadUserProfile() {
                 'Authorization': `Bearer ${authToken}`
             }
         });
-        
+
         if (response.ok) {
             currentUser = await response.json();
             // Show corporate section if user is corporation or institution
@@ -138,7 +138,7 @@ async function loadUserProfile() {
 function showSection(sectionId) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(sectionId).classList.add('active');
-    
+
     // Load section data
     if (sectionId === 'dashboard') {
         loadDashboard();
@@ -164,13 +164,13 @@ async function loadDashboard() {
         const analyticsResponse = await fetch(`${API_BASE}/api/analytics/summary`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (analyticsResponse.ok) {
             const analytics = await analyticsResponse.json();
             document.getElementById('latestFootprint').textContent = analytics.latest_footprint || '-';
             document.getElementById('avgFootprint').textContent = analytics.average_footprint || '-';
             document.getElementById('totalEntries').textContent = analytics.total_entries || '0';
-            
+
             const trendElement = document.getElementById('trend');
             const trendLabel = document.getElementById('trendLabel');
             if (analytics.trend === 'decreasing') {
@@ -184,12 +184,12 @@ async function loadDashboard() {
                 trendLabel.textContent = 'Stable';
             }
         }
-        
+
         // Load history for chart
         const historyResponse = await fetch(`${API_BASE}/api/entries?limit=12`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (historyResponse.ok) {
             const entries = await historyResponse.json();
             renderFootprintChart(entries);
@@ -202,17 +202,17 @@ async function loadDashboard() {
 function renderFootprintChart(entries) {
     const ctx = document.getElementById('footprintChart');
     if (!ctx) return;
-    
+
     const labels = entries.reverse().map(e => {
         const date = new Date(e.entry_date);
         return date.toLocaleDateString();
     });
     const data = entries.map(e => e.total_carbon_footprint);
-    
+
     if (footprintChart) {
         footprintChart.destroy();
     }
-    
+
     footprintChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -250,7 +250,7 @@ function renderFootprintChart(entries) {
 // Calculate footprint
 async function handleCalculate(event) {
     event.preventDefault();
-    
+
     const formData = {
         electricity_usage: parseFloat(document.getElementById('electricity_usage').value) || 0,
         gas_usage: parseFloat(document.getElementById('gas_usage').value) || 0,
@@ -269,7 +269,7 @@ async function handleCalculate(event) {
         supply_chain_distance: parseFloat(document.getElementById('supply_chain_distance').value) || 0,
         notes: document.getElementById('notes').value
     };
-    
+
     try {
         const response = await fetch(`${API_BASE}/api/calculate`, {
             method: 'POST',
@@ -279,9 +279,9 @@ async function handleCalculate(event) {
             },
             body: JSON.stringify(formData)
         });
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
             displayResults(data);
             document.getElementById('resultsSection').style.display = 'block';
@@ -300,7 +300,7 @@ async function handleCalculate(event) {
 function displayResults(data) {
     const footprint = data.footprint;
     const recommendations = data.recommendations;
-    
+
     let html = `
         <div class="total-footprint">
             <div class="label">Total Carbon Footprint</div>
@@ -340,7 +340,7 @@ function displayResults(data) {
             ` : ''}
         </div>
     `;
-    
+
     if (recommendations && recommendations.length > 0) {
         html += `<h4 style="margin-top: 2rem;">Top Recommendations</h4>`;
         recommendations.slice(0, 3).forEach(rec => {
@@ -363,7 +363,7 @@ function displayResults(data) {
             `;
         });
     }
-    
+
     document.getElementById('resultsContent').innerHTML = html;
 }
 
@@ -373,27 +373,27 @@ async function loadRecommendations() {
         const response = await fetch(`${API_BASE}/api/recommendations`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (response.ok) {
             const recommendations = await response.json();
             displayRecommendations(recommendations);
         } else {
-            document.getElementById('recommendationsContent').innerHTML = 
+            document.getElementById('recommendationsContent').innerHTML =
                 '<p>No recommendations available. Calculate your carbon footprint first!</p>';
         }
     } catch (error) {
-        document.getElementById('recommendationsContent').innerHTML = 
+        document.getElementById('recommendationsContent').innerHTML =
             '<p>Error loading recommendations.</p>';
     }
 }
 
 function displayRecommendations(recommendations) {
     if (recommendations.length === 0) {
-        document.getElementById('recommendationsContent').innerHTML = 
+        document.getElementById('recommendationsContent').innerHTML =
             '<p>No recommendations available. Calculate your carbon footprint first!</p>';
         return;
     }
-    
+
     let html = '';
     recommendations.forEach(rec => {
         html += `
@@ -417,7 +417,7 @@ function displayRecommendations(recommendations) {
             </div>
         `;
     });
-    
+
     document.getElementById('recommendationsContent').innerHTML = html;
 }
 
@@ -427,32 +427,32 @@ async function loadHistory() {
         const response = await fetch(`${API_BASE}/api/entries?limit=20`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (response.ok) {
             const entries = await response.json();
             displayHistory(entries);
         } else {
-            document.getElementById('historyContent').innerHTML = 
+            document.getElementById('historyContent').innerHTML =
                 '<p>No history available.</p>';
         }
     } catch (error) {
-        document.getElementById('historyContent').innerHTML = 
+        document.getElementById('historyContent').innerHTML =
             '<p>Error loading history.</p>';
     }
 }
 
 function displayHistory(entries) {
     if (entries.length === 0) {
-        document.getElementById('historyContent').innerHTML = 
+        document.getElementById('historyContent').innerHTML =
             '<p>No entries found. Calculate your carbon footprint to get started!</p>';
         return;
     }
-    
+
     let html = '';
     entries.forEach(entry => {
         const date = new Date(entry.entry_date);
         const breakdown = entry.category_breakdown || {};
-        
+
         html += `
             <div class="history-entry">
                 <div class="history-entry-header">
@@ -474,7 +474,7 @@ function displayHistory(entries) {
             </div>
         `;
     });
-    
+
     document.getElementById('historyContent').innerHTML = html;
 }
 
@@ -483,7 +483,7 @@ async function loadProfile() {
     if (!currentUser) {
         await loadUserProfile();
     }
-    
+
     if (currentUser) {
         document.getElementById('profileContent').innerHTML = `
             <div class="form-section">
@@ -525,7 +525,7 @@ async function loadPredictions() {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             renderPredictionChart(data);
@@ -541,15 +541,15 @@ async function loadPredictions() {
 function renderPredictionChart(data) {
     const ctx = document.getElementById('predictionChart');
     if (!ctx) return;
-    
+
     const predictions = data.predictions;
     const intervals = data.confidence_intervals;
-    const labels = Array.from({length: predictions.length}, (_, i) => `Month ${i+1}`);
-    
+    const labels = Array.from({ length: predictions.length }, (_, i) => `Month ${i + 1}`);
+
     if (predictionChart) {
         predictionChart.destroy();
     }
-    
+
     predictionChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -602,58 +602,8 @@ function updatePredictionStats(data) {
     document.getElementById('predPotential').textContent = Math.round(data.trend_analysis.projected_reduction_potential).toLocaleString();
 }
 
-// IoT Monitor
-let iotInterval = null;
+// IoT Monitor removed
 
-async function loadIoT() {
-    // Clear existing interval if any
-    if (iotInterval) clearInterval(iotInterval);
-    
-    // Initial load
-    await fetchIoTData();
-    
-    // Poll every 5 seconds
-    iotInterval = setInterval(fetchIoTData, 5000);
-}
-
-async function fetchIoTData() {
-    try {
-        const response = await fetch(`${API_BASE}/api/iot/sensors`, {
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            updateIoTDisplay(data);
-        }
-    } catch (error) {
-        console.error('Error fetching IoT data:', error);
-    }
-}
-
-function updateIoTDisplay(data) {
-    document.getElementById('iotActive').textContent = data.active_sensors;
-    document.getElementById('iotCurrent').textContent = data.total_emission_kg_co2;
-    
-    const grid = document.getElementById('sensorGrid');
-    grid.innerHTML = data.readings.map(sensor => `
-        <div class="sensor-card ${sensor.status === 'active' ? 'active' : 'inactive'}" 
-             style="background: white; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-weight: 600; color: #374151;">${sensor.sensor_id}</span>
-                <span style="font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: #d1fae5; color: #065f46;">
-                    ${sensor.sensor_type}
-                </span>
-            </div>
-            <div style="font-size: 1.5rem; font-weight: 700; color: #111827;">
-                ${sensor.emission_kg_co2} <span style="font-size: 0.875rem; font-weight: 400; color: #6b7280;">kg CO₂</span>
-            </div>
-            <div style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">
-                📍 ${sensor.location}
-            </div>
-        </div>
-    `).join('');
-}
 
 // Benchmarks
 let benchmarkChart = null;
@@ -663,7 +613,7 @@ async function loadBenchmarks() {
         const response = await fetch(`${API_BASE}/api/benchmark/compare`, {
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             renderBenchmarkChart(data);
@@ -677,11 +627,11 @@ async function loadBenchmarks() {
 function renderBenchmarkChart(data) {
     const ctx = document.getElementById('benchmarkChart');
     if (!ctx) return;
-    
+
     if (benchmarkChart) {
         benchmarkChart.destroy();
     }
-    
+
     benchmarkChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -723,7 +673,7 @@ function renderBenchmarkStats(data) {
         'Below Average': '#ef4444',
         'Poor': '#dc2626'
     }[data.performance_rating] || '#6b7280';
-    
+
     container.innerHTML = `
         <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid #e5e7eb; text-align: center;">
             <h3 style="color: #374151; margin-bottom: 0.5rem;">Performance Rating</h3>
