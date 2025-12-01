@@ -118,7 +118,7 @@ const Auth = {
 
         // Reset Dashboard/Results to encourage calculation
         // Or we could auto-calculate? Let's just go to Calculate tab to show the data
-        UI.showSection('calculate');
+        UI.showSection('dashboard');
 
         // Toast notification (optional, using alert for simplicity or just console)
         console.log(`Switched to ${label} demo mode`);
@@ -188,169 +188,217 @@ const UI = {
     }
 };
 
+// Mock Data for Demo Mode
+const MockData = {
+    dashboard: {
+        latest_footprint: 12500,
+        average_footprint: 11200,
+        total_entries: 24,
+        trend: 'decreasing'
+    },
+    history: Array.from({ length: 12 }, (_, i) => ({
+        entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
+        total_carbon_footprint: 12000 + Math.random() * 5000 - 2500,
+        category_breakdown: {
+            energy: 5000,
+            transport: 3000,
+            waste: 2000,
+            biosafety: 2000
+        }
+    })),
+    recommendations: [
+        {
+            title: "Switch to Renewable Energy",
+            description: "Transitioning to solar or wind power can significantly reduce your Scope 2 emissions.",
+            category: "Energy",
+            impact_rating: 5,
+            estimated_reduction: 4500
+        },
+        {
+            title: "Optimize HVAC Systems",
+            description: "Implementing smart HVAC controls can reduce energy consumption by up to 20%.",
+            category: "Efficiency",
+            impact_rating: 4,
+            estimated_reduction: 2100
+        },
+        {
+            title: "Implement Waste Segregation",
+            description: "Proper segregation of hazardous and non-hazardous waste improves recycling rates.",
+            category: "Waste",
+            impact_rating: 3,
+            estimated_reduction: 800
+        },
+        {
+            title: "Remote Work Policy",
+            description: "Encouraging remote work can lower transportation emissions and office energy use.",
+            category: "Transport",
+            impact_rating: 4,
+            estimated_reduction: 1500
+        }
+    ],
+    benchmarks: {
+        user_footprint: 12500,
+        benchmark: {
+            average_carbon_total: 15000
+        }
+    },
+    predictions: {
+        projected_annual: 145000,
+        trend_analysis: {
+            trend: 'decreasing',
+            projected_reduction_potential: 12000
+        },
+        predictions: Array.from({ length: 12 }, (_, i) => 12000 - i * 200),
+        confidence_intervals: Array.from({ length: 12 }, (_, i) => ({
+            upper: 12000 - i * 200 + 1000,
+            lower: 12000 - i * 200 - 1000
+        }))
+    }
+};
+
 const Sections = {
     async dashboard() {
         Dashboard.load();
     },
 
     async recommendations() {
-        try {
-            const res = await fetch(`${API_BASE}/api/recommendations`, { headers: Auth.headers() });
-            const data = await res.json();
+        // Use Mock Data
+        const data = MockData.recommendations;
 
-            const container = document.getElementById('recommendations');
-            if (!res.ok) {
-                container.innerHTML = '<div class="text-center py-12 text-muted-foreground">Failed to load recommendations.</div>';
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
-                    <div class="max-w-5xl mx-auto">
-                        <div class="mb-8 animate-slide-up">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="p-2 rounded-lg bg-primary/10">
-                                    <i data-lucide="lightbulb" class="w-6 h-6 text-primary"></i>
-                                </div>
-                                <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Recommendations</h1>
+        const container = document.getElementById('recommendations');
+        container.innerHTML = `
+            <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
+                <div class="max-w-5xl mx-auto">
+                    <div class="mb-8 animate-slide-up">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="p-2 rounded-lg bg-primary/10">
+                                <i data-lucide="lightbulb" class="w-6 h-6 text-primary"></i>
                             </div>
-                            <p class="text-lg text-muted-foreground">Biosafety & mitigation strategies tailored for your organization</p>
+                            <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Recommendations</h1>
                         </div>
-                        <div class="space-y-6">
-                            ${data.length ? data.map((rec, idx) => `
-                                <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-lg transition-all duration-300" style="animation-delay: ${idx * 100}ms">
-                                    <div class="flex items-start justify-between gap-4">
-                                        <div class="flex-1">
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                                                    ${rec.category || 'General'}
-                                                </span>
-                                                <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${rec.impact_rating >= 4 ? 'bg-destructive/10 text-destructive' : 'bg-secondary/10 text-secondary-foreground'}">
-                                                    ${rec.impact_rating >= 4 ? 'High' : 'Medium'} Priority
-                                                </span>
-                                            </div>
-                                            <h3 class="text-xl font-display font-semibold mb-1">${rec.title}</h3>
-                                            <p class="text-base text-muted-foreground">${rec.description}</p>
+                        <p class="text-lg text-muted-foreground">Biosafety & mitigation strategies tailored for your organization</p>
+                    </div>
+                    <div class="space-y-6">
+                        ${data.map((rec, idx) => `
+                            <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl p-6 hover:shadow-lg transition-all duration-300" style="animation-delay: ${idx * 100}ms">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                                                ${rec.category}
+                                            </span>
+                                            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent ${rec.impact_rating >= 4 ? 'bg-destructive/10 text-destructive' : 'bg-secondary/10 text-secondary-foreground'}">
+                                                ${rec.impact_rating >= 4 ? 'High' : 'Medium'} Priority
+                                            </span>
                                         </div>
-                                        <div class="text-right">
-                                            <div class="text-2xl font-bold text-primary">-${rec.estimated_reduction} kg</div>
-                                            <div class="text-xs text-muted-foreground">potential impact</div>
-                                        </div>
+                                        <h3 class="text-xl font-display font-semibold mb-1">${rec.title}</h3>
+                                        <p class="text-base text-muted-foreground">${rec.description}</p>
                                     </div>
-                                    <div class="mt-4">
-                                        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
-                                            Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                        </button>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-primary">-${rec.estimated_reduction} kg</div>
+                                        <div class="text-xs text-muted-foreground">potential impact</div>
                                     </div>
                                 </div>
-                            `).join('') : '<div class="text-center text-muted-foreground">No recommendations found.</div>'}
-                        </div>
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
-        } catch (err) {
-            console.error(err);
-        }
-    },
-
-    async benchmarks() {
-        try {
-            const res = await fetch(`${API_BASE}/api/benchmark/compare`, { headers: Auth.headers() });
-            const data = await res.json();
-            if (res.ok) {
-                const container = document.getElementById('benchmarks');
-                container.innerHTML = `
-                    <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
-                        <div class="max-w-7xl mx-auto">
-                            <div class="mb-8 animate-slide-up">
-                                <div class="flex items-center gap-3 mb-3">
-                                    <div class="p-2 rounded-lg bg-primary/10">
-                                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i>
-                                    </div>
-                                    <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Industry Benchmarks</h1>
-                                </div>
-                                <p class="text-lg text-muted-foreground">Compare your performance against industry standards</p>
-                            </div>
-                            <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl overflow-hidden">
-                                <div class="p-6 border-b border-border/50">
-                                    <h3 class="text-2xl font-display font-semibold">Benchmark Comparison</h3>
-                                    <p class="text-sm text-muted-foreground">Your organization vs. industry average</p>
-                                </div>
-                                <div class="p-6">
-                                    <div class="h-96 w-full relative">
-                                        <canvas id="benchmarkChart"></canvas>
-                                    </div>
-                                    <div id="benchmarkStats" class="mt-8"></div>
+                                <div class="mt-4">
+                                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 gap-2">
+                                        Learn More <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                `;
-                lucide.createIcons();
-                Charts.renderBenchmark(data);
-            }
-        } catch (err) { console.error(err); }
-    },
-
-    async predictions() {
-        try {
-            const res = await fetch(`${API_BASE}/api/predict?forecast_periods=12`, {
-                method: 'POST',
-                headers: Auth.headers()
-            });
-            const data = await res.json();
-            if (res.ok) {
-                Charts.renderPrediction(data);
-                document.getElementById('predictionStats').innerHTML = `
-                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
-                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Projected Annual</div>
-                        <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.projected_annual).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
-                    </div>
-                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
-                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trend</div>
-                        <div class="text-3xl font-bold mt-2 capitalize ${data.trend_analysis.trend === 'decreasing' ? 'text-primary' : 'text-destructive'}">${data.trend_analysis.trend}</div>
-                    </div>
-                    <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
-                        <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Reduction Potential</div>
-                        <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.trend_analysis.projected_reduction_potential).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
-                    </div>
-                `;
-            }
-        } catch (err) { console.error(err); }
-    },
-
-    async history() {
-        try {
-            const res = await fetch(`${API_BASE}/api/entries?limit=20`, { headers: Auth.headers() });
-            const entries = await res.json();
-
-            const container = document.getElementById('historyContent');
-            if (entries.length === 0) {
-                container.innerHTML = '<div class="text-center py-12 text-muted-foreground">No history available.</div>';
-                return;
-            }
-
-            container.innerHTML = entries.map(entry => `
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-muted/50 transition-colors gap-4">
-                    <div>
-                        <div class="text-sm text-muted-foreground mb-1">${new Date(entry.entry_date).toLocaleDateString(undefined, { dateStyle: 'full' })}</div>
-                        <div class="font-bold text-2xl text-foreground">${entry.total_carbon_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
-                    </div>
-                    <div class="flex gap-2 flex-wrap">
-                        ${Object.entries(entry.category_breakdown || {}).filter(([k]) => !['total', 'per_person'].includes(k)).slice(0, 3).map(([k, v]) => `
-                            <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 capitalize">
-                                ${k}: ${Math.round(v)}
-                            </span>
                         `).join('')}
                     </div>
                 </div>
-            `).join('');
-        } catch (err) { console.error(err); }
+            </div>
+        `;
+        lucide.createIcons();
+    },
+
+    async benchmarks() {
+        // Use Mock Data
+        const data = MockData.benchmarks;
+
+        const container = document.getElementById('benchmarks');
+        container.innerHTML = `
+            <div class="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-background p-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="mb-8 animate-slide-up">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="p-2 rounded-lg bg-primary/10">
+                                <i data-lucide="bar-chart-3" class="w-6 h-6 text-primary"></i>
+                            </div>
+                            <h1 class="text-4xl md:text-5xl font-display font-bold text-foreground">Industry Benchmarks</h1>
+                        </div>
+                        <p class="text-lg text-muted-foreground">Compare your performance against industry standards</p>
+                    </div>
+                    <div class="animate-slide-up border border-border/50 bg-card/80 backdrop-blur-sm rounded-xl overflow-hidden">
+                        <div class="p-6 border-b border-border/50">
+                            <h3 class="text-2xl font-display font-semibold">Benchmark Comparison</h3>
+                            <p class="text-sm text-muted-foreground">Your organization vs. industry average</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="h-96 w-full relative">
+                                <canvas id="benchmarkChart"></canvas>
+                            </div>
+                            <div id="benchmarkStats" class="mt-8"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+        Charts.renderBenchmark(data);
+    },
+
+    async predictions() {
+        // Use Mock Data
+        const data = MockData.predictions;
+
+        Charts.renderPrediction(data);
+        document.getElementById('predictionStats').innerHTML = `
+            <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Projected Annual</div>
+                <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.projected_annual).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
+            </div>
+            <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trend</div>
+                <div class="text-3xl font-bold mt-2 capitalize ${data.trend_analysis.trend === 'decreasing' ? 'text-primary' : 'text-destructive'}">${data.trend_analysis.trend}</div>
+            </div>
+            <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
+                <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Reduction Potential</div>
+                <div class="text-3xl font-bold text-primary mt-2">${Math.round(data.trend_analysis.projected_reduction_potential).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg</span></div>
+            </div>
+        `;
+    },
+
+    async history() {
+        // Use Mock Data
+        const entries = MockData.history;
+
+        const container = document.getElementById('historyContent');
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="text-center py-12 text-muted-foreground">No history available.</div>';
+            return;
+        }
+
+        container.innerHTML = entries.map(entry => `
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-muted/50 transition-colors gap-4">
+                <div>
+                    <div class="text-sm text-muted-foreground mb-1">${new Date(entry.entry_date).toLocaleDateString(undefined, { dateStyle: 'full' })}</div>
+                    <div class="font-bold text-2xl text-foreground">${Math.round(entry.total_carbon_footprint).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                    ${Object.entries(entry.category_breakdown || {}).slice(0, 3).map(([k, v]) => `
+                        <span class="inline-flex items-center rounded-md bg-muted px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 capitalize">
+                            ${k}: ${Math.round(v)}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
     },
 
     async profile() {
-        if (!Auth.user) await fetch(`${API_BASE}/api/auth/me`, { headers: Auth.headers() }).then(r => r.json()).then(u => Auth.user = u);
+        if (!Auth.user) Auth.user = Auth.presets.factory.user; // Fallback
         const u = Auth.user;
 
         // Ensure profile section exists or target it correctly
@@ -376,24 +424,24 @@ const Sections = {
                 <div class="grid gap-6 md:grid-cols-2">
                     <div class="space-y-2">
                         <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Full Name</label>
-                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.full_name}</div>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground flex items-center">${u.full_name}</div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-sm font-medium leading-none">Email</label>
-                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.email}</div>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground flex items-center">${u.email}</div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-sm font-medium leading-none">Username</label>
-                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.username}</div>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground flex items-center">${u.username}</div>
                     </div>
                     <div class="space-y-2">
                         <label class="text-sm font-medium leading-none">Entity Type</label>
-                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground capitalize">${u.user_type}</div>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground capitalize flex items-center">${u.user_type}</div>
                     </div>
                     ${u.organization_name ? `
                     <div class="space-y-2 md:col-span-2">
                         <label class="text-sm font-medium leading-none">Organization</label>
-                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground">${u.organization_name}</div>
+                        <div class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-muted-foreground flex items-center">${u.organization_name}</div>
                     </div>
                     ` : ''}
                 </div>
@@ -403,44 +451,33 @@ const Sections = {
 };
 
 const Dashboard = {
-  {
-  async load() {
-        try {
-            const [summaryRes, historyRes] = await Promise.all([
-                fetch(`${API_BASE}/api/analytics/summary`, { headers: Auth.headers() }),
-                fetch(`${API_BASE}/api/entries?limit=12`, { headers: Auth.headers() })
-            ]);
+    async load() {
+        // Use Mock Data
+        const summary = MockData.dashboard;
+        const entries = MockData.history;
 
-            if (!summaryRes.ok || !historyRes.ok) throw new Error('Failed to load dashboard');
-
-            const summary = await summaryRes.json();
-            const entries = await historyRes.json();
-
-            this.renderStats(summary);
-            Charts.renderFootprint(entries.reverse());
-        } catch (err) {
-            document.getElementById('dashboardStats').innerHTML = '<p>Error loading dashboard.</p>';
-        }
+        this.renderStats(summary);
+        Charts.renderFootprint(entries.reverse());
     },
 
     renderStats(data) {
         const statsHtml = `
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Latest Impact</div>
-                <div class="text-3xl font-bold text-primary mt-2">${data.latest_footprint || '-'} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                <div class="text-3xl font-bold text-primary mt-2">${data.latest_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
             </div>
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Average</div>
-                <div class="text-3xl font-bold text-primary mt-2">${data.average_footprint || '-'} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                <div class="text-3xl font-bold text-primary mt-2">${data.average_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
             </div>
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Entries</div>
-                <div class="text-3xl font-bold text-primary mt-2">${data.total_entries || '0'}</div>
+                <div class="text-3xl font-bold text-primary mt-2">${data.total_entries}</div>
             </div>
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trend</div>
-                <div class="text-3xl font-bold mt-2 ${data.trend === 'decreasing' ? 'text-primary' : data.trend === 'increasing' ? 'text-destructive' : 'text-muted-foreground'}">
-                    ${data.trend === 'decreasing' ? '↓ Improving' : data.trend === 'increasing' ? '↑ Worsening' : '→ Stable'}
+                <div class="text-3xl font-bold mt-2 ${data.trend === 'decreasing' ? 'text-primary' : 'text-destructive'}">
+                    ${data.trend === 'decreasing' ? '↓ Improving' : '↑ Worsening'}
                 </div>
             </div>
         `;
@@ -455,6 +492,7 @@ const Charts = {
 
     renderFootprint(entries) {
         const ctx = document.getElementById('footprintChart');
+        if (!ctx) return;
         const labels = entries.map(e => new Date(e.entry_date).toISOString());
         const data = entries.map(e => e.total_carbon_footprint);
 
@@ -466,11 +504,11 @@ const Charts = {
                 datasets: [{
                     label: 'Carbon Footprint',
                     data,
-                    borderColor: 'hsl(155, 65%, 25%)',
-                    backgroundColor: 'hsla(155, 65%, 25%, 0.1)',
+                    borderColor: 'hsl(142, 70%, 45%)',
+                    backgroundColor: 'hsla(142, 70%, 45%, 0.1)',
                     tension: 0.4,
                     fill: true,
-                    pointBackgroundColor: 'hsl(155, 65%, 25%)',
+                    pointBackgroundColor: 'hsl(142, 70%, 45%)',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointRadius: 4
@@ -635,34 +673,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submit
     document.getElementById('calculateForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
+        // Just show results with mock data logic or simple calculation
         const formData = Object.fromEntries(new FormData(e.target));
 
-        // Convert empty strings to 0
-        Object.keys(formData).forEach(k => {
-            if ((formData[k] === '' || !isNaN(formData[k])) && k !== 'notes') {
-                formData[k] = parseFloat(formData[k]) || 0;
+        // Simple mock calculation for demo
+        const total = Object.values(formData).reduce((a, b) => a + (parseFloat(b) || 0), 0) * 0.5; // Dummy formula
+
+        const result = {
+            footprint: {
+                total: Math.round(total),
+                energy: Math.round(total * 0.4),
+                transport: Math.round(total * 0.3),
+                waste: Math.round(total * 0.2),
+                biosafety: Math.round(total * 0.1)
             }
-        });
+        };
 
-        try {
-            const res = await fetch(`${API_BASE}/api/calculate`, {
-                method: 'POST',
-                headers: Auth.headers(),
-                body: JSON.stringify(formData)
-            });
-
-            const result = await res.json();
-            if (!res.ok) throw new Error(result.detail || 'Calculation failed');
-
-            const resultsSection = document.getElementById('resultsSection');
-            resultsSection.classList.remove('hidden');
-            document.getElementById('resultsContent').innerHTML = renderResults(result);
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
-
-            Dashboard.load(); // Refresh
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
+        const resultsSection = document.getElementById('resultsSection');
+        resultsSection.classList.remove('hidden');
+        document.getElementById('resultsContent').innerHTML = renderResults(result);
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
     });
 });
 
@@ -672,7 +702,6 @@ function renderResults(data) {
     <div class="text-center p-8 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 mb-8">
       <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Total Impact</div>
       <div class="text-5xl font-bold text-primary mb-2">${f.total.toLocaleString()} <span class="text-2xl text-muted-foreground font-normal">kg CO₂e</span></div>
-      ${f.per_person ? `<div class="text-sm text-muted-foreground">Per Person: <span class="font-medium text-foreground">${f.per_person.toFixed(1)} kg</span></div>` : ''}
     </div>
     
     <h4 class="text-lg font-semibold mb-4">Emissions Breakdown</h4>
