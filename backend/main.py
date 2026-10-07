@@ -36,15 +36,18 @@ app.include_router(router, prefix="/api")
 if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Mount dashboard files - serve static assets
-if os.path.exists("dashboard"):
-    app.mount("/dashboard", StaticFiles(directory="dashboard"), name="dashboard")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIR = os.path.join(BASE_DIR, '..', 'frontend')
+
+# Mount frontend files - serve static assets
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR), name="frontend")
     
     # Serve CSS and JS files at root level for easier access
     @app.get("/styles.css")
     async def get_styles():
         try:
-            with open("dashboard/styles.css", "r") as f:
+            with open(os.path.join(FRONTEND_DIR, "styles.css"), "r") as f:
                 from fastapi.responses import Response
                 return Response(content=f.read(), media_type="text/css")
         except FileNotFoundError:
@@ -54,7 +57,7 @@ if os.path.exists("dashboard"):
     @app.get("/app.js")
     async def get_app_js():
         try:
-            with open("dashboard/app.js", "r") as f:
+            with open(os.path.join(FRONTEND_DIR, "app.js"), "r") as f:
                 from fastapi.responses import Response
                 return Response(content=f.read(), media_type="application/javascript")
         except FileNotFoundError:
@@ -66,7 +69,7 @@ if os.path.exists("dashboard"):
 async def root():
     """Serve the main dashboard"""
     try:
-        with open("dashboard/index.html", "r") as f:
+        with open(os.path.join(FRONTEND_DIR, "index.html"), "r") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         return HTMLResponse(
@@ -76,7 +79,7 @@ async def root():
             <head><title>CarbonCALC</title></head>
             <body>
                 <h1>CarbonCALC - Carbon Footprint Monitoring System</h1>
-                <p>Dashboard is being set up. Please check back soon.</p>
+                <p>Frontend is being set up. Please check back soon.</p>
             </body>
             </html>
             """,
@@ -93,4 +96,3 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
