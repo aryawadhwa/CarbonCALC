@@ -51,6 +51,12 @@ def main():
             mlflow.log_metric("rmse", metrics["rmse"])
             mlflow.log_metric("r2_score", metrics["r2_score"])
             
+            # Log feature importances if it's a tree-based model
+            if hasattr(predictor.model, 'feature_importances_'):
+                importances = predictor.model.feature_importances_
+                for i, imp in enumerate(importances):
+                    mlflow.log_metric(f"feature_{i}_importance", imp)
+            
             print(f"Results for {model_type}: R2 = {metrics['r2_score']:.4f}, MAE = {metrics['mae']:.4f}")
             
             # Save model to models directory
