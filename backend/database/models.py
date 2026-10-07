@@ -1,5 +1,5 @@
 """
-Database models for Carbon Footprint Monitoring System
+Database models for waste generation Monitoring System
 """
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
@@ -68,7 +68,7 @@ class CarbonEntry(Base):
     supply_chain_distance = Column(Float, default=0)  # km
     
     # Calculated Values
-    total_carbon_footprint = Column(Float, default=0)  # CO2 equivalent in kg
+    total_waste_generated = Column(Float, default=0)  # waste equivalent in kg
     category_breakdown = Column(Text)  # JSON string
     
     # Metadata
@@ -94,7 +94,7 @@ class Recommendation(Base):
     description = Column(Text, nullable=False)
     impact_rating = Column(Integer)  # 1-5, how much impact this change will have
     difficulty = Column(String)  # easy, medium, hard
-    estimated_reduction = Column(Float)  # kg CO2 reduction
+    estimated_reduction = Column(Float)  # kg waste reduction
     cost_estimate = Column(String, nullable=True)  # free, low, medium, high
     priority = Column(Integer, default=0)  # Higher = more important
     
@@ -112,8 +112,8 @@ class IndustryBenchmark(Base):
     id = Column(Integer, primary_key=True, index=True)
     industry_type = Column(String, nullable=False)  # tech, manufacturing, healthcare, etc.
     user_type = Column(SQLEnum(UserType), nullable=False)
-    average_carbon_per_person = Column(Float)  # kg CO2 per person
-    average_carbon_total = Column(Float)  # kg CO2 total
+    average_carbon_per_person = Column(Float)  # kg waste per person
+    average_carbon_total = Column(Float)  # kg waste total
     benchmark_year = Column(Integer)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

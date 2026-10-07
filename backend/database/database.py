@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./carbon_monitor.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./waste_monitor.db")
 
 # Create engine
 engine = create_engine(

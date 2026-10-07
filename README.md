@@ -55,8 +55,8 @@ graph TD
 
 1. Clone the repository and navigate to the project directory:
 ```bash
-git clone https://github.com/aryawadhwa/CarbonCALC.git
-cd CarbonCALC
+git clone https://github.com/aryawadhwa/WasteAware.git
+cd WasteAware
 ```
 
 2. Install dependencies:

@@ -1,5 +1,5 @@
 """
-Machine Learning Models for Carbon Footprint Prediction and Forecasting
+Machine Learning Models for waste generation Prediction and Forecasting
 Research-grade predictive analytics using time series and regression models
 """
 import numpy as np
@@ -17,9 +17,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-class CarbonFootprintPredictor:
+class WasteGenerationPredictor:
     """
-    Advanced ML-based carbon footprint prediction system
+    Advanced ML-based waste generation prediction system
     Uses ensemble methods for accurate forecasting
     """
     
@@ -39,7 +39,7 @@ class CarbonFootprintPredictor:
         
     def prepare_features(self, historical_data: List[Dict]) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Prepare features from historical carbon footprint data
+        Prepare features from historical waste generation data
         Extracts temporal patterns, trends, and seasonal features
         """
         if not historical_data:
@@ -64,9 +64,9 @@ class CarbonFootprintPredictor:
         # Create rolling statistics
         window_size = min(3, len(df))
         if window_size > 0:
-            df['rolling_mean'] = df['total_carbon_footprint'].rolling(window=window_size, min_periods=1).mean()
-            df['rolling_std'] = df['total_carbon_footprint'].rolling(window=window_size, min_periods=1).std().fillna(0)
-            df['trend'] = df['total_carbon_footprint'].diff().fillna(0)
+            df['rolling_mean'] = df['total_waste_generated'].rolling(window=window_size, min_periods=1).mean()
+            df['rolling_std'] = df['total_waste_generated'].rolling(window=window_size, min_periods=1).std().fillna(0)
+            df['trend'] = df['total_waste_generated'].diff().fillna(0)
         
         for i in range(len(df)):
             row_features = []
@@ -80,7 +80,7 @@ class CarbonFootprintPredictor:
             if 'rolling_mean' in df.columns:
                 row_features.append(df.iloc[i]['rolling_mean'])
             else:
-                row_features.append(df.iloc[i]['total_carbon_footprint'])
+                row_features.append(df.iloc[i]['total_waste_generated'])
             
             if 'rolling_std' in df.columns:
                 row_features.append(df.iloc[i]['rolling_std'])
@@ -107,7 +107,7 @@ class CarbonFootprintPredictor:
                 row_features.extend([0] * 6)
             
             features.append(row_features)
-            targets.append(df.iloc[i]['total_carbon_footprint'])
+            targets.append(df.iloc[i]['total_waste_generated'])
         
         self.feature_names = [
             'days_since_start', 'month', 'quarter', 'rolling_mean', 'rolling_std', 'trend',
@@ -214,7 +214,7 @@ class CarbonFootprintPredictor:
     
     def predict(self, historical_data: List[Dict], forecast_periods: int = 12) -> Dict:
         """
-        Predict future carbon footprint
+        Predict future waste generation
         Args:
             historical_data: List of historical entries
             forecast_periods: Number of future periods to predict
@@ -273,7 +273,7 @@ class CarbonFootprintPredictor:
             current_features[0][3] = (current_features[0][3] + prediction) / 2
         
         # Calculate trend analysis
-        historical_values = [entry.get('total_carbon_footprint', 0) for entry in historical_data]
+        historical_values = [entry.get('total_waste_generated', 0) for entry in historical_data]
         if len(historical_values) > 1:
             trend = "increasing" if historical_values[-1] > historical_values[0] else "decreasing"
             avg_change = (historical_values[-1] - historical_values[0]) / len(historical_values)

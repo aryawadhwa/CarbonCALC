@@ -1,5 +1,5 @@
 """
-API Routes for CarbonCALC - Carbon Footprint Monitoring System
+API Routes for WasteAware - waste generation Monitoring System
 """
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -19,10 +19,10 @@ from auth.auth import (
     create_access_token,
     require_user_type
 )
-from utils.carbon_calculator import CarbonCalculator
+from utils.waste_calculator import CarbonCalculator
 from utils.recommendations import RecommendationEngine
 from utils.benchmarking import BenchmarkAnalyzer
-from ml_models.predictor import CarbonFootprintPredictor
+from ml_models.predictor import WasteGenerationPredictor
 # from iot.sensor_simulator import get_sensor_network (Removed)
 
 
@@ -154,14 +154,14 @@ async def get_current_user_info(current_user: User = Depends(get_current_active_
     }
 
 
-# Carbon Footprint Routes
+# waste generation Routes
 @router.post("/calculate", response_model=dict)
-async def calculate_carbon_footprint(
+async def calculate_waste_generation(
     entry_data: CarbonEntryInput,
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Calculate carbon footprint from input data"""
+    """Calculate waste generation from input data"""
     # Prepare data for calculator
     calc_data = entry_data.dict()
     calc_data["user_type"] = current_user.user_type.value
@@ -173,7 +173,7 @@ async def calculate_carbon_footprint(
     db_entry = CarbonEntry(
         user_id=current_user.id,
         **entry_data.dict(),
-        total_carbon_footprint=footprint_breakdown["total"],
+        total_waste_generated=footprint_breakdown["total"],
         category_breakdown=json.dumps(footprint_breakdown),
         period_start=entry_data.period_start or datetime.utcnow() - timedelta(days=30),
         period_end=entry_data.period_end or datetime.utcnow()
@@ -218,7 +218,7 @@ async def get_user_entries(
     db: Session = Depends(get_db),
     limit: int = 10
 ):
-    """Get user's carbon footprint entries"""
+    """Get user's waste generation entries"""
     entries = db.query(CarbonEntry).filter(
         CarbonEntry.user_id == current_user.id
     ).order_by(desc(CarbonEntry.entry_date)).limit(limit).all()
@@ -226,7 +226,7 @@ async def get_user_entries(
     return [
         {
             "id": entry.id,
-            "total_carbon_footprint": entry.total_carbon_footprint,
+            "total_waste_generated": entry.total_waste_generated,
             "category_breakdown": json.loads(entry.category_breakdown) if entry.category_breakdown else {},
             "entry_date": entry.entry_date.isoformat() if entry.entry_date else None,
             "period_start": entry.period_start.isoformat() if entry.period_start else None,
@@ -243,7 +243,7 @@ async def get_entry(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Get specific carbon footprint entry"""
+    """Get specific waste generation entry"""
     entry = db.query(CarbonEntry).filter(
         CarbonEntry.id == entry_id,
         CarbonEntry.user_id == current_user.id
@@ -261,7 +261,7 @@ async def get_entry(
     
     return {
         "id": entry.id,
-        "total_carbon_footprint": entry.total_carbon_footprint,
+        "total_waste_generated": entry.total_waste_generated,
         "category_breakdown": json.loads(entry.category_breakdown) if entry.category_breakdown else {},
         "entry_date": entry.entry_date.isoformat() if entry.entry_date else None,
         "recommendations": [
@@ -326,13 +326,13 @@ async def get_analytics_summary(
             "trend": "no_data"
         }
     
-    total_footprints = [e.total_carbon_footprint for e in entries]
+    total_footprints = [e.total_waste_generated for e in entries]
     avg_footprint = sum(total_footprints) / len(total_footprints)
     
     # Calculate trend
     if len(entries) >= 2:
-        recent = entries[0].total_carbon_footprint
-        previous = entries[1].total_carbon_footprint
+        recent = entries[0].total_waste_generated
+        previous = entries[1].total_waste_generated
         if recent < previous * 0.95:
             trend = "decreasing"
         elif recent > previous * 1.05:
@@ -345,7 +345,7 @@ async def get_analytics_summary(
     return {
         "total_entries": len(entries),
         "average_footprint": round(avg_footprint, 2),
-        "latest_footprint": round(entries[0].total_carbon_footprint, 2),
+        "latest_footprint": round(entries[0].total_waste_generated, 2),
         "trend": trend
     }
 
@@ -357,7 +357,7 @@ async def predict_footprint(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Predict future carbon footprint using ML models"""
+    """Predict future waste generation using ML models"""
     entries = db.query(CarbonEntry).filter(
         CarbonEntry.user_id == current_user.id
     ).order_by(desc(CarbonEntry.entry_date)).limit(24).all()
@@ -372,7 +372,7 @@ async def predict_footprint(
     historical_data = [
         {
             "entry_date": e.entry_date.isoformat() if e.entry_date else None,
-            "total_carbon_footprint": e.total_carbon_footprint,
+            "total_waste_generated": e.total_waste_generated,
             "category_breakdown": json.loads(e.category_breakdown) if e.category_breakdown else {}
         }
         for e in reversed(entries)  # Reverse to chronological order
@@ -380,7 +380,7 @@ async def predict_footprint(
     
     # Create and train predictor (optimized for CPU, no GPU needed)
     # Uses lightweight ensemble model that runs efficiently on standard hardware
-    predictor = CarbonFootprintPredictor(model_type="ensemble")
+    predictor = WasteGenerationPredictor(model_type="ensemble")
     training_metrics = predictor.train(historical_data)
     
     # Generate predictions
@@ -401,7 +401,7 @@ async def get_iot_sensors(
     # Mock IoT sensor data since simulator was removed
     return {
         "timestamp": datetime.utcnow().isoformat(),
-        "total_emission_kg_co2": 0.0,
+        "total_emission_kg_waste": 0.0,
         "sensor_count": 0,
         "active_sensors": 0,
         "readings": [],
@@ -418,7 +418,7 @@ async def get_iot_history(
     return {
         "period_hours": hours,
         "data_points": 0,
-        "total_emission_kg_co2": 0.0,
+        "total_emission_kg_waste": 0.0,
         "average_hourly_emission": 0.0,
         "message": "IoT sensor integration coming soon"
     }
@@ -431,7 +431,7 @@ async def compare_with_benchmark(
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Compare carbon footprint against industry benchmarks"""
+    """Compare waste generation against industry benchmarks"""
     if entry_id:
         entry = db.query(CarbonEntry).filter(
             CarbonEntry.id == entry_id,
@@ -439,7 +439,7 @@ async def compare_with_benchmark(
         ).first()
         if not entry:
             raise HTTPException(status_code=404, detail="Entry not found")
-        footprint = entry.total_carbon_footprint
+        footprint = entry.total_waste_generated
         employee_count = entry.employee_count or 1
     else:
         # Use latest entry
@@ -448,7 +448,7 @@ async def compare_with_benchmark(
         ).order_by(desc(CarbonEntry.entry_date)).first()
         if not entry:
             raise HTTPException(status_code=404, detail="No entries found")
-        footprint = entry.total_carbon_footprint
+        footprint = entry.total_waste_generated
         employee_count = entry.employee_count or 1
     
     comparison = BenchmarkAnalyzer.compare_with_benchmark(
@@ -480,7 +480,7 @@ async def get_research_report(
     entries_dict = [
         {
             "entry_date": e.entry_date.isoformat() if e.entry_date else None,
-            "total_carbon_footprint": e.total_carbon_footprint,
+            "total_waste_generated": e.total_waste_generated,
             "employee_count": e.employee_count or 1
         }
         for e in entries
@@ -504,12 +504,12 @@ async def get_research_report(
         historical_data = [
             {
                 "entry_date": e.entry_date.isoformat() if e.entry_date else None,
-                "total_carbon_footprint": e.total_carbon_footprint,
+                "total_waste_generated": e.total_waste_generated,
                 "category_breakdown": json.loads(e.category_breakdown) if e.category_breakdown else {}
             }
             for e in reversed(entries)
         ]
-        predictor = CarbonFootprintPredictor(model_type="ensemble")
+        predictor = WasteGenerationPredictor(model_type="ensemble")
         predictor.train(historical_data)
         predictions_data = predictor.predict(historical_data, forecast_periods=12)
     

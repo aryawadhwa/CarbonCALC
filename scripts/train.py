@@ -5,7 +5,7 @@ import sys
 
 # Append backend to path to import the predictor model
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
-from ml_models.predictor import CarbonFootprintPredictor
+from ml_models.predictor import WasteGenerationPredictor
 
 def main():
     # Set up MLflow tracking
@@ -38,7 +38,7 @@ def main():
             mlflow.log_param("model_type", model_type)
             mlflow.log_param("dataset_size", len(historical_data))
             
-            predictor = CarbonFootprintPredictor(model_type=model_type)
+            predictor = WasteGenerationPredictor(model_type=model_type)
             metrics = predictor.train(historical_data)
             
             if "error" in metrics:

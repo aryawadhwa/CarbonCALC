@@ -262,7 +262,7 @@ const MockData = {
         },
         history: Array.from({ length: 12 }, (_, i) => ({
             entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
-            total_carbon_footprint: 120000 + Math.random() * 10000 - 5000,
+            total_waste_generated: 120000 + Math.random() * 10000 - 5000,
             category_breakdown: {
                 energy: 50000,
                 transport: 30000,
@@ -328,7 +328,7 @@ const MockData = {
         },
         history: Array.from({ length: 12 }, (_, i) => ({
             entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
-            total_carbon_footprint: 45000 + Math.random() * 4000 - 2000,
+            total_waste_generated: 45000 + Math.random() * 4000 - 2000,
             category_breakdown: {
                 energy: 25000,
                 transport: 10000,
@@ -394,7 +394,7 @@ const MockData = {
         },
         history: Array.from({ length: 12 }, (_, i) => ({
             entry_date: new Date(Date.now() - i * 86400000 * 7).toISOString(),
-            total_carbon_footprint: 850 + Math.random() * 100 - 50,
+            total_waste_generated: 850 + Math.random() * 100 - 50,
             category_breakdown: {
                 energy: 300,
                 transport: 350,
@@ -582,7 +582,7 @@ const Sections = {
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-muted/50 transition-colors gap-4">
                 <div>
                     <div class="text-sm text-muted-foreground mb-1">${new Date(entry.entry_date).toLocaleDateString(undefined, { dateStyle: 'full' })}</div>
-                    <div class="font-bold text-2xl text-foreground">${Math.round(entry.total_carbon_footprint).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                    <div class="font-bold text-2xl text-foreground">${Math.round(entry.total_waste_generated).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
                 </div>
                 <div class="flex gap-2 flex-wrap">
                     ${Object.entries(entry.category_breakdown || {}).slice(0, 3).map(([k, v]) => `
@@ -676,7 +676,7 @@ const Charts = {
         const ctx = document.getElementById('footprintChart');
         if (!ctx) return;
         const labels = entries.map(e => new Date(e.entry_date).toISOString());
-        const data = entries.map(e => e.total_carbon_footprint);
+        const data = entries.map(e => e.total_waste_generated);
 
         if (this.footprint) this.footprint.destroy();
         this.footprint = new Chart(ctx, {
@@ -684,7 +684,7 @@ const Charts = {
             data: {
                 labels,
                 datasets: [{
-                    label: 'Carbon Footprint',
+                    label: 'waste generation',
                     data,
                     borderColor: 'hsl(142, 70%, 45%)',
                     backgroundColor: 'hsla(142, 70%, 45%, 0.1)',
@@ -806,7 +806,7 @@ const Charts = {
             data: {
                 labels: ['Your Impact', 'Industry Avg', 'Top Performers'],
                 datasets: [{
-                    label: 'Carbon Footprint (kg CO₂)',
+                    label: 'waste generation (kg CO₂)',
                     data: [
                         data.user_footprint,
                         data.benchmark.average_carbon_total,
@@ -886,7 +886,7 @@ function renderResults(data) {
       <div class="text-5xl font-bold text-primary mb-2">${f.total.toLocaleString()} <span class="text-2xl text-muted-foreground font-normal">kg CO₂e</span></div>
     </div>
     
-    <h4 class="text-lg font-semibold mb-4">Emissions Breakdown</h4>
+    <h4 class="text-lg font-semibold mb-4">waste output Breakdown</h4>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       ${Object.entries(f).filter(([k]) => !['total', 'per_person'].includes(k)).map(([k, v]) => `
         <div class="p-4 rounded-lg bg-muted/50 border border-border flex items-center justify-between">

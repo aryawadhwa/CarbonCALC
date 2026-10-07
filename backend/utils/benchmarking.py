@@ -9,7 +9,7 @@ import statistics
 
 
 class BenchmarkAnalyzer:
-    """Analyze and compare carbon footprints against industry benchmarks"""
+    """Analyze and compare waste generations against industry benchmarks"""
     
     @staticmethod
     def compare_with_benchmark(
@@ -80,8 +80,8 @@ class BenchmarkAnalyzer:
         
         return {
             "user_footprint": {
-                "total_kg_co2": round(user_footprint, 2),
-                "per_person_kg_co2": round(per_person_footprint, 2),
+                "total_kg_waste": round(user_footprint, 2),
+                "per_person_kg_waste": round(per_person_footprint, 2),
                 "employee_count": employee_count
             },
             "industry_benchmarks": {
@@ -92,15 +92,15 @@ class BenchmarkAnalyzer:
                 "sample_size": len(benchmarks)
             },
             "comparison": {
-                "deviation_kg_co2": round(deviation_from_mean, 2),
+                "deviation_kg_waste": round(deviation_from_mean, 2),
                 "percentage_deviation": round(percentage_deviation, 2),
                 "performance_rating": performance_rating,
                 "performance_score": performance_score,
                 "comparison_status": "better" if deviation_from_mean < 0 else "worse" if deviation_from_mean > 0 else "equal"
             },
             "improvement_potential": {
-                "potential_reduction_kg_co2": round(improvement_potential, 2),
-                "target_per_person_kg_co2": round(percentile_25, 2),
+                "potential_reduction_kg_waste": round(improvement_potential, 2),
+                "target_per_person_kg_waste": round(percentile_25, 2),
                 "reduction_percentage": round((improvement_potential / user_footprint * 100) if user_footprint > 0 else 0, 2)
             },
             "research_metrics": {
@@ -123,7 +123,7 @@ class BenchmarkAnalyzer:
             return {"error": "No user data available"}
         
         # Calculate user statistics
-        footprints = [e.get('total_carbon_footprint', 0) for e in user_entries]
+        footprints = [e.get('total_waste_generated', 0) for e in user_entries]
         
         user_stats = {
             "mean": statistics.mean(footprints),

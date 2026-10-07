@@ -1,6 +1,6 @@
 """
 Biosafety and Sustainability Recommendation Engine
-Generates personalized recommendations based on carbon footprint analysis
+Generates personalized recommendations based on waste generation analysis
 """
 from typing import List, Dict, Any
 from database.models import UserType
@@ -15,7 +15,7 @@ class RecommendationEngine:
         "energy": [
             {
                 "title": "Industrial Energy Efficiency Audit",
-                "description": "Conduct a comprehensive audit of industrial machinery. Optimizing motors and thermal systems can reduce emissions by 20-30%.",
+                "description": "Conduct a comprehensive audit of industrial machinery. Optimizing motors and thermal systems can reduce waste output by 20-30%.",
                 "impact_rating": 5,
                 "difficulty": "medium",
                 "estimated_reduction": 5000,
@@ -23,7 +23,7 @@ class RecommendationEngine:
             },
             {
                 "title": "Renewable Energy Transition",
-                "description": "Switch facility power to renewable sources (solar/wind). Critical for reducing Scope 2 emissions in manufacturing.",
+                "description": "Switch facility power to renewable sources (solar/wind). Critical for reducing Scope 2 waste output in manufacturing.",
                 "impact_rating": 5,
                 "difficulty": "hard",
                 "estimated_reduction": 10000,
@@ -129,7 +129,7 @@ class RecommendationEngine:
             },
             {
                 "title": "Supply Chain Decarbonization",
-                "description": "Engage suppliers in carbon reduction. Scope 3 emissions often constitute the largest share of corporate footprint.",
+                "description": "Engage suppliers in carbon reduction. Scope 3 waste output often constitute the largest share of corporate footprint.",
                 "impact_rating": 4,
                 "difficulty": "hard",
                 "estimated_reduction": 20000,
@@ -150,7 +150,7 @@ class RecommendationEngine:
         recommendations = []
         total_footprint = footprint_breakdown.get("total", 0)
         
-        # Sort categories by emissions (highest first)
+        # Sort categories by waste output (highest first)
         categories = ["energy", "transportation", "waste", "food", "water", "corporate"]
         sorted_categories = sorted(
             categories,
@@ -158,7 +158,7 @@ class RecommendationEngine:
             reverse=True
         )
         
-        # Get top 3 categories with highest emissions
+        # Get top 3 categories with highest waste output
         top_categories = sorted_categories[:3]
         
         # Generate recommendations for each top category
@@ -212,19 +212,19 @@ class RecommendationEngine:
     @staticmethod
     def _get_contextual_feedback(category: str, footprint_breakdown: Dict[str, float]) -> str:
         """Generate contextual biosafety and mitigation feedback"""
-        category_emissions = footprint_breakdown.get(category, 0)
+        category_waste output = footprint_breakdown.get(category, 0)
         total = footprint_breakdown.get("total", 1)
-        percentage = (category_emissions / total * 100) if total > 0 else 0
+        percentage = (category_waste output / total * 100) if total > 0 else 0
         
         feedbacks = {
-            "energy": f"Energy use constitutes {percentage:.1f}% of emissions. "
+            "energy": f"Energy use constitutes {percentage:.1f}% of waste output. "
                      f"Optimizing thermal systems and transitioning to renewables is critical for biosafety and carbon reduction.",
             "transportation": f"Logistics account for {percentage:.1f}% of impact. "
                             f"Electrifying fleets reduces particulate matter, directly improving local biosafety.",
             "waste": f"Waste generation is {percentage:.1f}% of your footprint. "
                     f"Proper neutralization of hazardous waste is a key biosafety requirement.",
             "food": f"Food sourcing contributes {percentage:.1f}%. "
-                   f"Sustainable sourcing ensures biological safety and reduces supply chain emissions.",
+                   f"Sustainable sourcing ensures biological safety and reduces supply chain waste output.",
             "water": f"Water usage is {percentage:.1f}%. "
                     f"Treating effluent prevents biological contamination of local water bodies.",
             "corporate": f"Operational protocols contribute significantly. "
