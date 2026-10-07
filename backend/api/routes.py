@@ -19,7 +19,7 @@ from auth.auth import (
     create_access_token,
     require_user_type
 )
-from utils.waste_calculator import CarbonCalculator
+from utils.waste_calculator import WasteCalculator
 from utils.recommendations import RecommendationEngine
 from utils.benchmarking import BenchmarkAnalyzer
 from ml_models.predictor import WasteGenerationPredictor
@@ -167,7 +167,7 @@ async def calculate_waste_generation(
     calc_data["user_type"] = current_user.user_type.value
     
     # Calculate footprint
-    footprint_breakdown = CarbonCalculator.calculate_total_footprint(calc_data)
+    footprint_breakdown = WasteCalculator.calculate_total_footprint(calc_data)
     
     # Create database entry
     db_entry = CarbonEntry(

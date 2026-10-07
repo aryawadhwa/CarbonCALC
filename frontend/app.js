@@ -582,7 +582,7 @@ const Sections = {
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-muted/50 transition-colors gap-4">
                 <div>
                     <div class="text-sm text-muted-foreground mb-1">${new Date(entry.entry_date).toLocaleDateString(undefined, { dateStyle: 'full' })}</div>
-                    <div class="font-bold text-2xl text-foreground">${Math.round(entry.total_waste_generated).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                    <div class="font-bold text-2xl text-foreground">${Math.round(entry.total_waste_generated).toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg Waste</span></div>
                 </div>
                 <div class="flex gap-2 flex-wrap">
                     ${Object.entries(entry.category_breakdown || {}).slice(0, 3).map(([k, v]) => `
@@ -646,11 +646,11 @@ const Dashboard = {
         const statsHtml = `
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Latest Impact</div>
-                <div class="text-3xl font-bold text-primary mt-2">${data.latest_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                <div class="text-3xl font-bold text-primary mt-2">${data.latest_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg Waste</span></div>
             </div>
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Average</div>
-                <div class="text-3xl font-bold text-primary mt-2">${data.average_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg CO₂</span></div>
+                <div class="text-3xl font-bold text-primary mt-2">${data.average_footprint.toLocaleString()} <span class="text-sm font-normal text-muted-foreground">kg Waste</span></div>
             </div>
             <div class="p-6 rounded-xl border bg-card text-card-foreground shadow-sm">
                 <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Entries</div>
@@ -806,7 +806,7 @@ const Charts = {
             data: {
                 labels: ['Your Impact', 'Industry Avg', 'Top Performers'],
                 datasets: [{
-                    label: 'waste generation (kg CO₂)',
+                    label: 'waste generation (kg Waste)',
                     data: [
                         data.user_footprint,
                         data.benchmark.average_carbon_total,
@@ -883,7 +883,7 @@ function renderResults(data) {
     return `
     <div class="text-center p-8 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 mb-8">
       <div class="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-2">Total Impact</div>
-      <div class="text-5xl font-bold text-primary mb-2">${f.total.toLocaleString()} <span class="text-2xl text-muted-foreground font-normal">kg CO₂e</span></div>
+      <div class="text-5xl font-bold text-primary mb-2">${f.total.toLocaleString()} <span class="text-2xl text-muted-foreground font-normal">kg Wastee</span></div>
     </div>
     
     <h4 class="text-lg font-semibold mb-4">waste output Breakdown</h4>
