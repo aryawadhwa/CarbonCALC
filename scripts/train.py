@@ -9,7 +9,7 @@ from ml_models.predictor import CarbonFootprintPredictor
 
 def main():
     # Set up MLflow tracking
-    mlflow.set_experiment("CarbonCALC_Model_Training")
+    mlflow.set_experiment("Waste_Management_Model_Training")
     
     # The real dataset is expected to be placed here by the user/researcher
     dataset_path = "data/raw/dataset.csv"

@@ -2,7 +2,7 @@
 
 This project strictly follows MLOps Phase 1 guidelines (Development & Reproducibility) to ensure that model training, data exploration, and evaluation can be systematically reproduced. 
 
-Because the project relies on restricted real-world data, the raw dataset is intentionally excluded from the Git repository. 
+Because the project relies on restricted real-world waste generation data, the raw dataset is intentionally excluded from the Git repository. 
 
 ## 1. Setup
 
@@ -13,7 +13,7 @@ pip install -r requirements-dev.txt
 
 ## 2. Dataset Acquisition & DVC Tracking
 
-Once you have acquired the approved dataset, place it in the `data/raw/` directory:
+Once you have acquired the approved waste management dataset, place it in the `data/raw/` directory:
 ```bash
 mv path/to/your/real_dataset.csv data/raw/dataset.csv
 ```
@@ -22,7 +22,7 @@ To securely track this dataset using Data Version Control (DVC) without committi
 ```bash
 dvc add data/raw/dataset.csv
 git add data/raw/dataset.csv.dvc
-git commit -m "data: Track raw dataset with DVC"
+git commit -m "data: Track raw waste dataset with DVC"
 ```
 
 ## 3. Data Exploration (EDA)
@@ -31,7 +31,7 @@ A Jupyter notebook template is provided to ensure standardized data exploration:
 ```bash
 jupyter notebook notebooks/01_EDA.ipynb
 ```
-The notebook is pre-configured to load `data/raw/dataset.csv` and contains structural placeholders for distribution and correlation analysis.
+The notebook is pre-configured to load `data/raw/dataset.csv` and contains structural placeholders for distribution and correlation analysis of waste generation metrics.
 
 ## 4. Model Training & MLflow Experiment Tracking
 

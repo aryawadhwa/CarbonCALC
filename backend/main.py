@@ -1,6 +1,6 @@
 """
 Main FastAPI Application
-CarbonCALC: Real-Time Carbon Footprint Monitoring and Predictive Reporting Cloud Solution
+AI-Powered Waste Management Awareness System
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,8 +15,8 @@ init_db()
 
 # Create FastAPI app
 app = FastAPI(
-    title="CarbonCALC",
-    description="Real-Time Carbon Footprint Monitoring and Predictive Reporting Cloud Solution",
+    title="Waste Management Awareness API",
+    description="AI-Powered Waste Management Awareness System",
     version="1.0.0"
 )
 
@@ -76,9 +76,9 @@ async def root():
             content="""
             <!DOCTYPE html>
             <html>
-            <head><title>CarbonCALC</title></head>
+            <head><title>Waste Management Awareness</title></head>
             <body>
-                <h1>CarbonCALC - Carbon Footprint Monitoring System</h1>
+                <h1>AI-Powered Waste Management Awareness System</h1>
                 <p>Frontend is being set up. Please check back soon.</p>
             </body>
             </html>
@@ -90,7 +90,7 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "CarbonCALC"}
+    return {"status": "healthy", "service": "WasteManagementAPI"}
 
 
 if __name__ == "__main__":
